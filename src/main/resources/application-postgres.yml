@@ -1,0 +1,16 @@
+spring:
+  config:
+    activate:
+      on-profile: postgres
+  datasource:
+    url: jdbc:postgresql://localhost:5432/database
+    username: fiap
+    password: senhaFiap
+    driver-class-name: org.postgresql.Driver
+  #    properties:
+  #      hibernate:
+  #        format_sql: true
+  #        jdbc.lob.non_contextual_creation: true
+
+  flyway:
+    locations: classpath:db/migration/postgres

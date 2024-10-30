@@ -1,0 +1,41 @@
+services:
+  postgres-db:
+    image: postgres:15
+    container_name: postgres-db
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: fiap
+      POSTGRES_PASSWORD: senhaFiap
+      POSTGRES_DB: database
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: app
+    ports:
+      - "1234:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: postgres
+      SPRING_DATASOURCE_USERNAME: fiap
+      SPRING_DATASOURCE_PASSWORD: senhaFiap
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/database
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/db
+  #    restart: always
+#      depends_on:
+#        - db
+
+  mysql-db:
+    image: mysql
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: database
+      MYSQL_USER: fiap
+      MYSQL_PASSWORD: senhaFiap
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data/mysql:/var/lib/mysql
