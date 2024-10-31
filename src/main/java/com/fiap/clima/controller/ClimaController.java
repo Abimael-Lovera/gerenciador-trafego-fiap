@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ public class ClimaController {
     }
 
     @PostMapping
+    @Transactional
     public ResponseEntity<ClimaViewDTO> create(@RequestBody @Validated ClimaCreateDTO clima) {
         log.info("Criando clima: {}", clima);
         return ResponseEntity.status(HttpStatus.CREATED).body(climaService.save(clima));
@@ -44,12 +46,14 @@ public class ClimaController {
     }
 
     @PutMapping("/{idClima}")
+    @Transactional
     public ResponseEntity<ClimaViewDTO> updateById(@RequestBody @Validated ClimaUpdateDTO climaUpdateDTO, @PathVariable Long idClima) {
         log.info("Atualizando clima: {}", climaUpdateDTO);
         return ResponseEntity.status(HttpStatus.OK).body(climaService.updateById(climaUpdateDTO, idClima));
     }
 
     @DeleteMapping("/{idClima}")
+    @Transactional
     public ResponseEntity<ClimaViewDTO> deleteById(@PathVariable Long idClima) {
         log.info("Deletando clima com id: {}", idClima);
         return ResponseEntity.status(HttpStatus.OK).body(climaService.deleteById(idClima));

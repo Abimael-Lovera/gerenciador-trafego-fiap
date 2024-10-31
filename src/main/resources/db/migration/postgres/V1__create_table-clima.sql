@@ -14,5 +14,3 @@ CREATE TABLE t_gti_clima
     nr_umidade     FLOAT(6)    NOT NULL,
     dt_registro    DATE        NOT NULL
 );
-
-
