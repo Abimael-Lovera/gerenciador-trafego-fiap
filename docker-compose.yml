@@ -10,7 +10,8 @@ services:
       POSTGRES_PASSWORD: senhaFiap
       POSTGRES_DB: database
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+#      - ./data/postgres:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
 
   app:
     build: .
@@ -22,10 +23,9 @@ services:
       SPRING_DATASOURCE_USERNAME: fiap
       SPRING_DATASOURCE_PASSWORD: senhaFiap
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/database
-#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/db
-  #    restart: always
-#      depends_on:
-#        - db
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/database
+      depends_on:
+        postgres-db
 
   mysql-db:
     image: mysql
@@ -38,4 +38,8 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./data/mysql:/var/lib/mysql
+#      - ./data/mysql:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
+volumes:
+  postgres-data:
+  mysql-data:
