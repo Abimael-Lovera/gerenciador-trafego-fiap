@@ -41,7 +41,7 @@ public class SemaforoService {
         );
 
         semaforo.setClima(clima);
-        log.info("Semaforo salve: {}", semaforo);
+        log.info("Semaforo salvo: {}", semaforo);
         var semaforoSalvo = semaforoRepository.save(semaforo);
         return new SemaforoViewDTO(semaforoSalvo);
     }

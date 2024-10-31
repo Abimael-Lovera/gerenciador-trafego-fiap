@@ -115,3 +115,14 @@ spring:
     "climaId": 3
 }
 ```
+
+3. Exemplo para criar acidente
+```json
+{
+    "localAcidente": "Avenida Paulista, São Paulo",
+    "dataAcidente": "2024-10-31",
+    "gravidade": "GRAVE",
+    "nrFluxoImpactado": 200,
+    "semaforoId": 1
+}
+```
