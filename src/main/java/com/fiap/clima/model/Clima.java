@@ -1,4 +1,4 @@
-package com.fiap.model;
+package com.fiap.clima.model;
 
 import jakarta.persistence.*;
 

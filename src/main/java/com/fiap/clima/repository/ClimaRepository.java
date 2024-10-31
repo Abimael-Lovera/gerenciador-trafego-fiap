@@ -1,6 +1,6 @@
-package com.fiap.repository;
+package com.fiap.clima.repository;
 
-import com.fiap.model.Clima;
+import com.fiap.clima.model.Clima;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

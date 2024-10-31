@@ -1,11 +1,11 @@
-package com.fiap.service;
+package com.fiap.clima.service;
 
-import com.fiap.dto.ClimaCreateDTO;
-import com.fiap.dto.ClimaUpdateDTO;
-import com.fiap.dto.ClimaViewDTO;
-import com.fiap.exceptions.ClimaNaoEncontradaException;
-import com.fiap.model.Clima;
-import com.fiap.repository.ClimaRepository;
+import com.fiap.clima.dto.ClimaCreateDTO;
+import com.fiap.clima.dto.ClimaUpdateDTO;
+import com.fiap.clima.dto.ClimaViewDTO;
+import com.fiap.clima.exceptions.ClimaNaoEncontradoException;
+import com.fiap.clima.model.Clima;
+import com.fiap.clima.repository.ClimaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,8 +36,8 @@ public class ClimaService {
     public ClimaViewDTO findById(Long idClima) {
         Optional<Clima> clima = climaRepository.findById(idClima);
         if (clima.isEmpty()) {
-            log.error("Não foi possivel encontrar o clima com id: " +  idClima);
-            throw new ClimaNaoEncontradaException("Clima não encontrado");
+            log.error("Não foi possível encontrar o clima com id: " + idClima);
+            throw new ClimaNaoEncontradoException(idClima);
         }
         return new ClimaViewDTO(clima.get());
     }
@@ -51,8 +50,8 @@ public class ClimaService {
         Optional<Clima> climaFindById = climaRepository.findById(idClima);
         log.info("climaFindById: {}", climaFindById);
         if (climaFindById.isEmpty()) {
-            log.error("Não foi possivel encontrar o clima com id{}", idClima);
-            throw new ClimaNaoEncontradaException("Clima não encontrado");
+            log.error("Não foi possível encontrar o clima com id{}", idClima);
+            throw new ClimaNaoEncontradoException(idClima);
         }
         Clima climaAtualizado = new Clima();
         climaAtualizado.setIdClima(climaFindById.get().getIdClima());
@@ -62,14 +61,11 @@ public class ClimaService {
     }
 
     public ClimaViewDTO deleteById(Long idClima) {
-        Optional<Clima> clima = climaRepository.findById(idClima);
-        if (clima.isEmpty()) {
-            log.error("Não foi possivel encontrar o clima com id: {}", idClima);
-            throw new ClimaNaoEncontradaException("Clima não encontrado");
-        }
-        climaRepository.deleteById(idClima);
+        Clima clima = climaRepository.findById(idClima)
+                .orElseThrow(() -> new ClimaNaoEncontradoException(idClima));
+        climaRepository.deleteById(clima.getIdClima());
         log.info("Clima deletado com sucesso");
-        log.info("Clima deletado: {}", clima.get());
-        return new ClimaViewDTO(clima.get());
+        log.info("Clima deletado: {}", clima);
+        return new ClimaViewDTO(clima);
     }
 }

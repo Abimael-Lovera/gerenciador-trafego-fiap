@@ -1,7 +1,7 @@
-package com.fiap.dto;
+package com.fiap.clima.dto;
 
 
-import com.fiap.model.Clima;
+import com.fiap.clima.model.Clima;
 
 import java.time.LocalDate;
 

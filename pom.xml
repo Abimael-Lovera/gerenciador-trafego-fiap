@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.fiap</groupId>
-    <artifactId>crud</artifactId>
+    <artifactId>gerenciador-trafego</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>crud</name>
-    <description>crud</description>
+    <name>gerenciador-trafego</name>
+    <description>Api Rest da aplicação Gerenciado de Tráfego - FIAP</description>
     <url/>
     <licenses>
         <license/>

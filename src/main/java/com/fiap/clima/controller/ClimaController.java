@@ -1,9 +1,9 @@
-package com.fiap.controller;
+package com.fiap.clima.controller;
 
-import com.fiap.dto.ClimaCreateDTO;
-import com.fiap.dto.ClimaUpdateDTO;
-import com.fiap.dto.ClimaViewDTO;
-import com.fiap.service.ClimaService;
+import com.fiap.clima.dto.ClimaCreateDTO;
+import com.fiap.clima.dto.ClimaUpdateDTO;
+import com.fiap.clima.dto.ClimaViewDTO;
+import com.fiap.clima.service.ClimaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
