@@ -7,17 +7,17 @@ import java.time.LocalDate;
 
 public record SensorTrafegoViewDTO(
         Integer id,
-        Integer fluxoVeiculos,
-        Integer visibilidade,
-        LocalDate deteccao,
+        Integer qtFluxoVeiculos,
+        Integer nrVisibilidade,
+        LocalDate dtDeteccao,
         SemaforoViewDTO semaforo
 ) {
     public SensorTrafegoViewDTO(SensorTrafego sensorTrafego) {
         this(
                 sensorTrafego.getId(),
-                sensorTrafego.getFluxoVeiculos(),
-                sensorTrafego.getVisibilidade(),
-                sensorTrafego.getDeteccao(),
+                sensorTrafego.getQtFluxoVeiculos(),
+                sensorTrafego.getNrVisibilidade(),
+                sensorTrafego.getDtDeteccao(),
                 new SemaforoViewDTO(sensorTrafego.getSemaforo())
         );
     }

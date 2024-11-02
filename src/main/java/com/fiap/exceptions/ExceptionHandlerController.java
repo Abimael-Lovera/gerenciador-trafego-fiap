@@ -20,6 +20,14 @@ public class ExceptionHandlerController {
         return ex.toProblemDetail();
     }
 
+    @ExceptionHandler(Exception.class)
+    public ProblemDetail tratarErro500(Exception ex) {
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+        pd.setTitle("Erro no servidor");
+        pd.setDetail(ex.getMessage());
+        return pd;
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleValidationException(MethodArgumentNotValidException ex) {
         Map<String, String> detalhes = new HashMap<>();

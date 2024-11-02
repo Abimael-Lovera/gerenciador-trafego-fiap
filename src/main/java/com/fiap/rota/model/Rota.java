@@ -55,4 +55,14 @@ public class Rota {
     public void setAcidente(Acidente acidente) {
         this.acidente = acidente;
     }
+
+    @Override
+    public String toString() {
+        return "Rota{" +
+                "id=" + id +
+                ", descricaoRota='" + descricaoRota + '\'' +
+                ", status=" + status +
+                ", acidente=" + acidente +
+                '}';
+    }
 }

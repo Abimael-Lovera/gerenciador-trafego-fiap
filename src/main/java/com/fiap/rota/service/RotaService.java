@@ -36,6 +36,8 @@ public class RotaService {
             log.info("Acidente: {}", acidente);
             // Atualizamos o acidente no rota
             rota.setAcidente(acidente);
+        } else {
+            throw new RotaNaoEncontradoException(rotaCreateDTO.acidenteId());
         }
 
         BeanUtils.copyProperties(rotaCreateDTO, rota);

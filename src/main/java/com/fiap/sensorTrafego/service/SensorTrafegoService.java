@@ -1,6 +1,5 @@
 package com.fiap.sensorTrafego.service;
 
-import com.fiap.semaforo.dto.SemaforoViewDTO;
 import com.fiap.semaforo.exception.SemaforoNaoEncontradoException;
 import com.fiap.semaforo.model.Semaforo;
 import com.fiap.semaforo.repository.SemaforoRepository;
@@ -12,6 +11,7 @@ import com.fiap.sensorTrafego.model.SensorTrafego;
 import com.fiap.sensorTrafego.repository.SensorTrafegoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,6 +33,7 @@ public class SensorTrafegoService {
 
     public SensorTrafegoViewDTO save(SensorTrafegoCreateDTO sensorTrafegoCreateDTO) {
         var sensorTrafego = new SensorTrafego();
+        BeanUtils.copyProperties(sensorTrafegoCreateDTO, sensorTrafego);
         // Validamos se o semaforo existe
         log.info("Buscando semaforo com id: {}", sensorTrafegoCreateDTO.semaforoId());
         Semaforo semaforo = semaforoRepository.findById(sensorTrafegoCreateDTO.semaforoId())
@@ -52,6 +53,8 @@ public class SensorTrafegoService {
     }
 
     public SensorTrafegoViewDTO updateById(Integer id, SensorTrafegoUpdateDTO sensorTrafegoUpdateDTO) {
+        log.info("Atualizando sensorTrafego com id: {}", id);
+        log.info("Atualizando sensorTrafego: {}", sensorTrafegoUpdateDTO);
         Optional<SensorTrafego> sensorTrafego = sensorTrafegoRepository.findById(id);
         if (sensorTrafego.isEmpty()) {
             throw new SensorTrafegoNaoEncontradoException(id);
@@ -60,7 +63,10 @@ public class SensorTrafegoService {
         log.info("Buscando semaforo com id: {}", sensorTrafegoUpdateDTO.semaforoId());
         Semaforo semaforo = semaforoRepository.findById(sensorTrafegoUpdateDTO.semaforoId())
                 .orElseThrow(() -> new SemaforoNaoEncontradoException(sensorTrafegoUpdateDTO.semaforoId()));
+        log.info("Semaforo encontrado: {}", semaforo);
+
         sensorTrafego.get().setSemaforo(semaforo);
+        BeanUtils.copyProperties(sensorTrafegoUpdateDTO, sensorTrafego.get());
         log.info("SensorTrafego atualizado: {}", sensorTrafego);
         return new SensorTrafegoViewDTO(sensorTrafegoRepository.save(sensorTrafego.get()));
     }

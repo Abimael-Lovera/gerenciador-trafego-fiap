@@ -66,4 +66,15 @@ public class Semaforo {
     public void setClima(Clima clima) {
         this.clima = clima;
     }
+
+    @Override
+    public String toString() {
+        return "Semaforo{" +
+                "idSemaforo=" + idSemaforo +
+                ", dsLocalizacao='" + dsLocalizacao + '\'' +
+                ", dsEstado='" + dsEstado + '\'' +
+                ", dtUltAtualizacao=" + dtUltAtualizacao +
+                ", clima=" + clima +
+                '}';
+    }
 }

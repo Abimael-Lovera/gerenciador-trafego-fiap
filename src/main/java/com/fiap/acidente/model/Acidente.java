@@ -78,4 +78,18 @@ public class Acidente {
     public void setSemaforo(Semaforo semaforo) {
         this.semaforo = semaforo;
     }
+
+    @Override
+    public String toString() {
+        return "Acidente{" +
+                "id=" + id +
+                ", localAcidente='" + localAcidente + '\'' +
+                ", dataAcidente=" + dataAcidente +
+                ", gravidade=" + gravidade +
+                ", nrFluxoImpactado=" + nrFluxoImpactado +
+                ", semaforo=" + semaforo +
+                '}';
+    }
+
+
 }

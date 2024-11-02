@@ -11,18 +11,18 @@ public class SensorTrafego {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sensor_trafego_seq")
     @SequenceGenerator(name = "sensor_trafego_seq", sequenceName = "t_gti_sensor_trafego_seq", allocationSize = 1)
+    @Column(name = "id_sensor")
     private Integer id;
 
-
     @Column(name = "qt_fluxo_veiculos", nullable = false)
-    private Integer fluxoVeiculos;
+    private Integer qtFluxoVeiculos;
 
 
     @Column(name = "nr_visibilidade", nullable = false)
-    private Integer visibilidade;
+    private Integer nrVisibilidade;
 
     @Column(name = "dt_deteccao", nullable = false)
-    private LocalDate deteccao;
+    private LocalDate dtDeteccao;
 
     @ManyToOne
     @JoinColumn(name = "t_gti_semaforo_id_semaforo", nullable = false)
@@ -36,28 +36,28 @@ public class SensorTrafego {
         this.id = id;
     }
 
-    public Integer getFluxoVeiculos() {
-        return fluxoVeiculos;
+    public Integer getQtFluxoVeiculos() {
+        return qtFluxoVeiculos;
     }
 
-    public void setFluxoVeiculos(Integer fluxoVeiculos) {
-        this.fluxoVeiculos = fluxoVeiculos;
+    public void setQtFluxoVeiculos(Integer fluxoVeiculos) {
+        this.qtFluxoVeiculos = fluxoVeiculos;
     }
 
-    public Integer getVisibilidade() {
-        return visibilidade;
+    public Integer getNrVisibilidade() {
+        return nrVisibilidade;
     }
 
-    public void setVisibilidade(Integer visibilidade) {
-        this.visibilidade = visibilidade;
+    public void setNrVisibilidade(Integer visibilidade) {
+        this.nrVisibilidade = visibilidade;
     }
 
-    public LocalDate getDeteccao() {
-        return deteccao;
+    public LocalDate getDtDeteccao() {
+        return dtDeteccao;
     }
 
-    public void setDeteccao(LocalDate deteccao) {
-        this.deteccao = deteccao;
+    public void setDtDeteccao(LocalDate deteccao) {
+        this.dtDeteccao = deteccao;
     }
 
     public Semaforo getSemaforo() {
@@ -66,5 +66,16 @@ public class SensorTrafego {
 
     public void setSemaforo(Semaforo semaforo) {
         this.semaforo = semaforo;
+    }
+
+    @Override
+    public String toString() {
+        return "SensorTrafego{" +
+                "id=" + id +
+                ", qtFluxoVeiculos=" + qtFluxoVeiculos +
+                ", nrVisibilidade=" + nrVisibilidade +
+                ", dtDeteccao=" + dtDeteccao +
+                ", semaforo=" + semaforo +
+                '}';
     }
 }
