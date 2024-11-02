@@ -12,7 +12,7 @@ public record RotaUpdateDTO(
         String descricaoRota,
 
         @NotNull
-        @Pattern(regexp = "aberta|fechada", message = "Status deve ser 'ABERTA' ou 'FECHADA'")
+//        @Pattern(regexp = "ABERTA|FECHADA", message = "Status deve ser 'ABERTA' ou 'FECHADA'")
         RotaStatus status,
 
 //        @NotNull(message = "O id do acidente é obrigatório!")
