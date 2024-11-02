@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/sensorTrafego")
-public class SensortTrafegoController {
+public class SensorTrafegoController {
 
     private final SensorTrafegoService sensorTrafegoService;
 
-    public SensortTrafegoController(SensorTrafegoService sensorTrafegoService) {
+    public SensorTrafegoController(SensorTrafegoService sensorTrafegoService) {
         this.sensorTrafegoService = sensorTrafegoService;
     }
 
