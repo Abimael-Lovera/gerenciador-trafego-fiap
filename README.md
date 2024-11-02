@@ -391,3 +391,6 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue ou env
 3. Faça suas alterações e commit (`git commit -m 'Adiciona nova funcionalidade'`).
 4. Envie para o repositório remoto (`git push origin feature/nova-funcionalidade`).
 5. Abra um pull request.
+
+## Licença
+Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
