@@ -2,6 +2,7 @@ package com.fiap.exceptions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -62,6 +63,14 @@ public class ExceptionHandlerController {
         pd.setTitle("Erro no servidor");
         pd.setDetail(ex.getMessage());
         pd.setProperty("timestamp", LocalDateTime.now());
+        return pd;
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ProblemDetail handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+        pd.setTitle("Usuário já cadastrado!");
+        pd.setDetail(ex.getMessage());
         return pd;
     }
 
