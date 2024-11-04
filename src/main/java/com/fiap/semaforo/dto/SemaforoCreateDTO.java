@@ -12,6 +12,9 @@ public record SemaforoCreateDTO(
         @NotBlank(message = "O estado é obrigatório.")
         String dsEstado,
 
+        @NotNull(message = "Número de duração é obrigatório")
+        Integer nrDuracaoEstado,
+
         @NotNull(message = "A data de atualização é obrigatória.")
         LocalDate dtUltAtualizacao,
 
