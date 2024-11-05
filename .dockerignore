@@ -1,0 +1,12 @@
+/target
+docker-compose.yml
+Dockerfile
+.dockerignore
+.gitignore
+README.md
+HELP.md
+Gerenciador-FIAP.json
+img-doc-swagger.png
+LICENSE
+mvnw
+mvnw.cmd

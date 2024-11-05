@@ -40,6 +40,9 @@ public class SensorTrafegoService {
                 .orElseThrow(() -> new SemaforoNaoEncontradoException(sensorTrafegoCreateDTO.semaforoId()));
         sensorTrafego.setSemaforo(semaforo);
         log.info("SensorTrafego salvo: {}", sensorTrafego);
+
+        alteraDuracaoDoSemaforo(sensorTrafego, semaforo);
+
         return new SensorTrafegoViewDTO(sensorTrafegoRepository.save(sensorTrafego));
     }
 
@@ -75,6 +78,25 @@ public class SensorTrafegoService {
         var sensorTrafego = sensorTrafegoRepository.findById(id).orElseThrow(() -> new SensorTrafegoNaoEncontradoException(id));
         sensorTrafegoRepository.delete(sensorTrafego);
         return new SensorTrafegoViewDTO(sensorTrafego);
+    }
+
+    private void alteraDuracaoDoSemaforo(SensorTrafego sensorTrafego, Semaforo semaforo) {
+        if (sensorTrafego.getQtFluxoVeiculos() <= 100 ) {
+            switch (semaforo.getDsEstado()) {
+                case "verde", "vermelho":
+                    semaforo.setNrDuracaoEstado(30);
+                    break;
+            }
+        } else {
+            switch (semaforo.getDsEstado()) {
+                case "verde":
+                    semaforo.setNrDuracaoEstado(120);
+                    break;
+                case "vermelho":
+                    semaforo.setNrDuracaoEstado(30);
+                    break;
+            }
+        }
     }
 
 }

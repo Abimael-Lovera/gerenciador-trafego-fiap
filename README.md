@@ -233,6 +233,7 @@ Content-Type: application/json
 {
     "dsLocalizacao": "Avenida Paulista, SP",
     "dsEstado": "verde",
+    "nrDuracaoEstado": 10,
     "dtUltAtualizacao": "2024-10-31",
     "climaId": 3
 }
@@ -246,6 +247,7 @@ Content-Type: application/json
 {
     "dsLocalizacao": "Avenida Paulista, SP - Atualizando",
     "dsEstado": "amarelo",
+    "nrDuracaoEstado": 10,
     "dtUltAtualizacao": "2024-11-10",
     "climaId": 3
 }
@@ -265,6 +267,16 @@ GET http://localhost:8080/api/v1/acidentes
 ### Buscar por Id
 ```http
 GET http://localhost:8080/api/v1/acidentes/1
+```
+
+### Buscar por data de gravidade
+```http
+GET http://localhost:8080/api/v1/acidentes/relatorio/por-data-e-gravidade?data=2024-10-31&gravidade=leve
+```
+
+### Buscar sumarizado de quantidade de acidentes por gravidade filtrando pela data
+```http
+GET http://localhost:8080/api/v1/acidentes/relatorio/por-data?data=2024-10-31
 ```
 
 ### Criar

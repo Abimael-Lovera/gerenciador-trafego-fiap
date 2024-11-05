@@ -21,6 +21,9 @@ public class Semaforo {
     @Size(max = 10)
     private String dsEstado;
 
+    @Column(name = "nr_duracao_estado")
+    private int nrDuracaoEstado;
+
     private LocalDate dtUltAtualizacao;
 
     @ManyToOne
@@ -67,12 +70,21 @@ public class Semaforo {
         this.clima = clima;
     }
 
+    public int getNrDuracaoEstado() {
+        return nrDuracaoEstado;
+    }
+
+    public void setNrDuracaoEstado(int numeroDuracaoEstado) {
+        this.nrDuracaoEstado = numeroDuracaoEstado;
+    }
+
     @Override
     public String toString() {
         return "Semaforo{" +
                 "idSemaforo=" + idSemaforo +
                 ", dsLocalizacao='" + dsLocalizacao + '\'' +
                 ", dsEstado='" + dsEstado + '\'' +
+                ", nrDuracaoEstado='" + nrDuracaoEstado + '\'' +
                 ", dtUltAtualizacao=" + dtUltAtualizacao +
                 ", clima=" + clima +
                 '}';
