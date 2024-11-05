@@ -1,4 +1,4 @@
-CREATE SEQUENCE t_gti_sensor_trafego_seq START 1 INCREMENT 1 CACHE 1;
+CREATE SEQUENCE t_gti_sensor_trafego_seq START WITH 1 INCREMENT BY 1 CACHE 1;
 
 CREATE TABLE t_gti_sensor_trafego
 (

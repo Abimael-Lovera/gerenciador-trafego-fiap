@@ -30,11 +30,10 @@ public class SecurityConfig {
                         //Permitir registro e login para todos - endpoint "auth/..."
                         .requestMatchers(HttpMethod.POST, "auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "auth/register").permitAll()
-
-                        
+                        // Permitir acesso endpoints de documentação
+                        .requestMatchers("/api-docs/**", "/doc/**").permitAll()
                         // Permitir que USER acesse todos os endpoints GET
                         .requestMatchers(HttpMethod.GET, "/**").hasRole("USER")
-
                         // Permitir que ADMIN acesse todos os outros endpoints
                         .requestMatchers("/**").hasRole("ADMIN")
 

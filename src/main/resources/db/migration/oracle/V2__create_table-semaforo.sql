@@ -9,6 +9,7 @@ CREATE TABLE t_gti_semaforo
     id_semaforo      INTEGER      NOT NULL PRIMARY KEY,
     ds_localizacao   VARCHAR2(150) NOT NULL,
     ds_estado        VARCHAR2(10)  DEFAULT 'vermelho' NOT NULL,
+    nr_duracao_estado  INTEGER      NOT NULL,
     dt_ult_atualizacao DATE       NOT NULL,
     t_gti_clima_id_clima INTEGER,
 

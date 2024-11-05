@@ -6,7 +6,7 @@ spring:
   datasource:
     url: jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL
     username: RM553524
-    password: 210291
+    password: XXXXXXXXX
     driver-class-name: oracle.jdbc.OracleDriver
 
   flyway:
