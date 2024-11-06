@@ -45,7 +45,7 @@ O projeto possui a seguinte estrutura de diretórios:
 
 ```
 ├── Dockerfile (DockerFile para construir a imagem da aplicação)
-├── Gerenciador-FIAP.json (Collection para o Insomnia)
+├── Gerenciador Trafego - FIAP.json (Collection para o Insomnia)
 ├── HELP.md
 ├── README.md
 ├── docker-compose.yml (Contem os serviços de banco de dados e app)
@@ -176,7 +176,7 @@ A documentação da API está disponível em http://localhost:8080/api/v1/doc/sw
 
 ## Uso da aplicação com Insomnia
 
-Dentro do projeto, há um arquivo Gerenciador-FIAP.json que contém a coleção de requisições HTTP que podem ser
+Dentro do projeto, há um arquivo **Gerenciador Trafego - FIAP.json** que contém a coleção de requisições HTTP que podem ser
 utilizadas.
 
 > [!IMPORTANT]
