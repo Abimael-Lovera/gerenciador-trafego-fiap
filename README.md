@@ -1,5 +1,10 @@
 # Gerenciador de trafego FIAP
+## Membros do Projeto
 
+- Abimael Alejandro Lovera Mamani
+- Fernando Gustavo Silva
+- Raul de Alencar Bonfim
+- Lucas Leonardo Parizotto de Carvalho e Silva
 ## Índice
 
 1. [Funcionalidades](#funcionalidades)
