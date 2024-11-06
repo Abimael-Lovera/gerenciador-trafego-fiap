@@ -1,5 +1,7 @@
 # Gerenciador de trafego FIAP
+
 ## Índice
+
 1. [Funcionalidades](#funcionalidades)
 2. [Tecnologias Utilizadas](#tecnologias-utilizadas)
 3. [Pré-requisitos](#pré-requisitos)
@@ -13,24 +15,26 @@
 11. [Licença](#licença)
 
 ## Funcionalidades
+
 - Registro e consulta de acidentes
 - Registro e consulta de rotas
 - Registro e consulta de semáforos
 - Registro e consulta de condições climáticas
 
 ## Tecnologias Utilizadas
+
 - Java 21
 - Spring Boot
 - Maven
 - Docker
-- PostgreSQL/MySQL
+- PostgreSQL/Oracle
 
 ## Pré-requisitos
 
 - Java 21
 - Maven
 - Insomnia ou outro cliente para requisições HTTP
-- Banco de dados PostgreSQL ou MySQL
+- Banco de dados PostgreSQL ou Oracle
 - Docker e Docker Compose (opcional caso não a instalado um banco de dados)
 
 ## Estrutura de Diretórios
@@ -49,60 +53,57 @@ O projeto possui a seguinte estrutura de diretórios:
 ├── mvnw.cmd
 ├── pom.xml
 ├── src
-│   ├── main
-│   │   ├── java
-│   │   │   └── com
-│   │   │       └── fiap
-│   │   │           ├── MainApplication.java
-│   │   │           ├── acidente
-│   │   │           │   ├── controller
-│   │   │           │   │   └── AcidenteController.java
-│   │   │           │   ├── dto
-│   │   │           │   │   ├── AcidenteCreateDTO.java
-│   │   │           │   │   ├── AcidenteUpdateDTO.java
-│   │   │           │   │   └── AcidenteViewDTO.java
-│   │   │           │   ├── exception
-│   │   │           │   │   └── AcidenteNaoEncontradoException.java
-│   │   │           │   ├── model
-│   │   │           │   │   ├── Acidente.java
-│   │   │           │   │   └── Gravidade.java
-│   │   │           │   ├── repository
-│   │   │           │   │   └── AcidenteRepository.java
-│   │   │           │   └── service
-│   │   │           │       └── AcidenteService.java
-│   │   │           ├── clima
-│   │   │           ├── exceptions
-│   │   │           │   ├── AppGerenciadorTrafegoException.java
-│   │   │           │   └── ExceptionHandlerController.java
-│   │   │           ├── rota
-│   │   │           ├── semaforo
-│   │   │           └── sensorTrafego
-│   │   └── resources
-│   │       ├── HttpRequest.http
-│   │       ├── application-mysql.yml
-│   │       ├── application-postgres.yml
-│   │       ├── application.properties
-│   │       ├── db
-│   │       │   └── migration
-│   │       │       ├── mysql
-│   │       │       │   ├── V1__create_table-clima.sql
-│   │       │       │   └── V2__create_table-gti_semaforo.sql
-│   │       │       └── postgres
-│   │       │           ├── V1__create_table-clima.sql
-│   │       │           ├── V2__create_table-gti_semaforo.sql
-│   │       │           ├── V3__create_table-reg-acidente.sql
-│   │       │           ├── V4__create_table_t_gti_rota.sql
-│   │       │           └── V5__create_table_t_gti_sensor_trafego.sql
-│   │       ├── static
-│   │       └── templates
-│   └── test
-│       └── java
-│           └── com
-│               └── fiap
-│                   └── CrudApplicationTests.java
-└── target
-```
+    ├── main
+       ├── java
+       │   └── com
+       │       └── fiap
+       │           ├── MainApplication.java
+       │           ├── acidente
+       │           │   ├── controller
+       │           │   │   └── AcidenteController.java
+       │           │   ├── dto
+       │           │   │   ├── AcidenteCreateDTO.java
+       │           │   │   ├── AcidenteUpdateDTO.java
+       │           │   │   └── AcidenteViewDTO.java
+       │           │   ├── exception
+       │           │   │   └── AcidenteNaoEncontradoException.java
+       │           │   ├── model
+       │           │   │   ├── Acidente.java
+       │           │   │   └── Gravidade.java
+       │           │   ├── repository
+       │           │   │   └── AcidenteRepository.java
+       │           │   └── service
+       │           │       └── AcidenteService.java
+       │           ├── clima
+       │           ├── exceptions
+       │           │   ├── AppGerenciadorTrafegoException.java
+       │           │   └── ExceptionHandlerController.java
+       │           ├── rota
+       │           ├── semaforo
+       │           └── sensorTrafego
+       └── resources
+           ├── HttpRequest.http
+           ├── application-oracle.yml
+           ├── application-postgres.yml
+           ├── application.properties
+           ├── db
+              └── migration
+                  ├── oracle
+                  │   ├── V1__create_table-clima.sql
+                  │   └── V2__create_table-gti_semaforo.sql
+                  │   ├── V3__create_table-reg-acidente.sql
+                  │   └── V4__create_table_t_gti_rota.sql
+                  │   └── V5__create_table_t_gti_sensor_trafego.sql
+                  │   └── V6__create_table-usuarios.sql
+                  └── postgres
+                      ├── V1__create_table-clima.sql
+                      ├── V2__create_table-gti_semaforo.sql
+                      ├── V3__create_table-reg-acidente.sql
+                      ├── V4__create_table_t_gti_rota.sql
+                      └── V5__create_table_t_gti_sensor_trafego.sql
+                      └── V6__create_table-usuarios.sql
 
+```
 
 </details>
 
@@ -119,22 +120,22 @@ O projeto possui a seguinte estrutura de diretórios:
 
 ### Configuração do Banco de Dados
 
-1. O projeto está configurado para utilizar um banco de dados PostgreSQL por padrão, mas pode ser alterado para MySQL.
+1. O projeto está configurado para utilizar um banco de dados PostgreSQL por padrão, mas pode ser alterado para Oracle.
    Para isso, é importante alterar o arquivo `application.properties` onde estão configurados os profiles para
-   PostgreSQL e MySQL.
+   PostgreSQL e Oracle.
 
    Para PostgreSQL:
    ```properties
    spring.profiles.active=postgres
    ```
 
-   Para MySQL:
+   Para Oracle:
    ```properties
-   spring.profiles.active=mysql
+   spring.profiles.active=oracle
    ```
 
 2. Lembre-se de alterar o url, username e password do banco de dados no arquivo `application-<postgres.yml` ou
-   `application-<mysql.yml`.
+   `application-<oracle.yml`.
 
    Exemplo do arquivo `application-postgres.yml`:
 
@@ -154,10 +155,6 @@ O projeto possui a seguinte estrutura de diretórios:
     ```sh
     docker-compose -f docker-compose.yml up postgres-db
     ```
-   para MySQL:
-   ```sh
-   docker-compose -f docker-compose.yml up mysql-db
-   ```
 
 ## Executando o Projeto
 
@@ -174,13 +171,70 @@ Para executar o projeto, basta seguir um dos passos abaixo:
 
 ## Acessar documentação da API
 
-A documentação da API está disponível em http://localhost:8080/doc/swagger-ui.html
+A documentação da API está disponível em http://localhost:8080/api/v1/doc/swagger-ui/index.html
 ![img.png](img-doc-swagger.png)
-## Uso da aplicação com Insomnia
-Dentro do projeto, há um arquivo Gerenciador-FIAP.json que contém a coleção de requisições HTTP que podem ser utilizadas.
 
-## 1. Clima
+## Uso da aplicação com Insomnia
+
+Dentro do projeto, há um arquivo Gerenciador-FIAP.json que contém a coleção de requisições HTTP que podem ser
+utilizadas.
+
+> [!IMPORTANT]
+> 1. Existe dois tipos de usuários: ADMIN e USER.
+> 2. O usuário ADMIN tem acesso a todos os endpoints, enquanto o usuário USER tem apenas acesso aos endpoints de tipo "
+     GET".
+> 3. Para realizar a requisição, é necessário ter o token JWT válido(Gerar o token no endpoint de "
+     /api/v1/auth/register").
+> 4. Os endpoints de documentação swagger e OpenAPI não precisam de autenticação com o token JWT.
+
+## 1. Autenticação
+
+<details>
+<summary> Clique para ver exemplos dos endpoints </summary>
+
+### Autenticação com usuário
+
+```http
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+	"nome": "Usuario FIAP",
+	"email": "user@fiap.com.br",
+	"senha": "123456",
+	"role": "USER"
+}
+```
+
+### Autenticação com usuário e token JWT
+
+```http
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+	"email": "user@fiap.com.br",
+	"senha": "123456"
+}
+```
+
+### Autenticação com usuário inválido
+
+```http
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "usuário@fiap.com.br",
+---
+
+## 2. Clima
+
+<details>
+<summary> Clique para ver exemplos dos endpoints </summary>
+
 ### Criar Clima
+
 ```http
 POST http://localhost:8080/api/v1/clima
 Content-Type: application/json
@@ -192,16 +246,21 @@ Content-Type: application/json
     "dtRegistro": "2024-10-30"
 }
 ```
+
 ### Buscar todos os Climas
+
 ```http
 GET http://localhost:8080/api/v1/clima
 ```
 
 ### Buscar Clima por Id
+
 ```http
 GET http://localhost:8080/api/v1/clima/1
 ```
+
 ### Atualizar Clima
+
 ```http
 PUT http://localhost:8080/api/v1/clima/1
 Content-Type: application/json
@@ -213,19 +272,30 @@ Content-Type: application/json
     "dtRegistro": "2024-10-25"
 }
 ```
-## 2. Semaforos
 
-Buscar Todos
+</details>
+
+---
+
+## 3. Semaforos
+
+<details>
+<summary> Clique para ver exemplos dos endpoints </summary>
+
+### Buscar Todos
+
 ```http
 GET http://localhost:8080/api/v1/semaforos
 ```
 
-Buscar por Id
+### Buscar por Id
+
 ```http
 GET http://localhost:8080/api/v1/semaforos/1
 ```
 
-Criar
+### Criar
+
 ```http
 POST http://localhost:8080/api/v1/semaforos
 Content-Type: application/json
@@ -239,7 +309,8 @@ Content-Type: application/json
 }
 ```
 
-Atualizar
+### Atualizar
+
 ```http
 PUT http://localhost:8080/api/v1/semaforos/1
 Content-Type: application/json
@@ -253,33 +324,47 @@ Content-Type: application/json
 }
 ```
 
-Excluir
+### Excluir
+
 ```http
 DELETE http://localhost:8080/api/v1/semaforos/1
 ```
 
-## 3. Acidentes
+</details>
+
+---
+
+## 4. Acidentes
+
+<details>
+<summary> Clique para ver exemplos dos endpoints </summary>
+
 ### Buscar Todos
+
 ```http
 GET http://localhost:8080/api/v1/acidentes
 ```
 
 ### Buscar por Id
+
 ```http
 GET http://localhost:8080/api/v1/acidentes/1
 ```
 
 ### Buscar por data de gravidade
+
 ```http
 GET http://localhost:8080/api/v1/acidentes/relatorio/por-data-e-gravidade?data=2024-10-31&gravidade=leve
 ```
 
 ### Buscar sumarizado de quantidade de acidentes por gravidade filtrando pela data
+
 ```http
 GET http://localhost:8080/api/v1/acidentes/relatorio/por-data?data=2024-10-31
 ```
 
 ### Criar
+
 ```http
 POST http://localhost:8080/api/v1/acidentes
 Content-Type: application/json
@@ -294,6 +379,7 @@ Content-Type: application/json
 ```
 
 ### Atualizar
+
 ```http
 PUT http://localhost:8080/api/v1/acidentes/1
 Content-Type: application/json
@@ -308,23 +394,34 @@ Content-Type: application/json
 ```
 
 ### Excluir
+
 ```http
 DELETE http://localhost:8080/api/v1/acidentes/1
 ```
 
-## 4. Rotas
+</details>
+
+---
+
+## 5. Rotas
+
+<details>
+<summary> Clique para ver exemplos dos endpoints </summary>
 
 ### Buscar Todos
+
 ```http
 GET http://localhost:8080/api/v1/rotas
 ```
 
 ### Buscar por Id
+
 ```http
 GET http://localhost:8080/api/v1/rotas/8
 ```
 
 ### Criar
+
 ```http
 POST http://localhost:8080/api/v1/rotas
 Content-Type: application/json
@@ -337,6 +434,7 @@ Content-Type: application/json
 ```
 
 ### Atualizar
+
 ```http
 PUT http://localhost:8080/api/v1/rotas/8
 Content-Type: application/json
@@ -349,22 +447,34 @@ Content-Type: application/json
 ```
 
 ### Excluir
+
 ```http
 DELETE http://localhost:8080/api/v1/rotas/7
 ```
 
-## 5. SensorTrafego
+</details>
+
+---
+
+## 6. SensorTrafego
+
+<details>
+<summary> Clique para ver exemplos dos endpoints </summary>
+
 ### Buscar Todos
+
 ```http
 GET http://localhost:8080/api/v1/sensorTrafego
 ```
 
 ### Buscar por Id
+
 ```http
 GET http://localhost:8080/api/v1/sensorTrafego/9
 ```
 
 ### Criar
+
 ```http
 POST http://localhost:8080/api/v1/sensorTrafego
 Content-Type: application/json
@@ -378,6 +488,7 @@ Content-Type: application/json
 ```
 
 ### Atualizar
+
 ```http
 PUT http://localhost:8080/api/v1/sensorTrafego/9
 Content-Type: application/json
@@ -391,11 +502,56 @@ Content-Type: application/json
 ```
 
 ### Excluir
+
 ```http
 DELETE http://localhost:8080/api/v1/sensorTrafego/10
 ```
 
+</details>
+
+---
+
+## 7. Usuários
+
+<details>
+<summary> Clique para ver exemplos dos endpoints </summary>
+
+### Buscar Todos
+
+```http
+GET http://localhost:8080/api/v1/usuarios
+```
+
+### Buscar por Id
+
+```http
+GET http://localhost:8080/api/v1/usuarios/1
+```
+
+### Atualizar
+
+```http
+PUT http://localhost:8080/api/v1/usuarios/1
+Content-Type: application/json
+
+{
+    "login": "usuário@fiap.com.br",
+    "senha": "12345678"
+}
+```
+
+### Excluir
+
+```http
+DELETE http://localhost:8080/api/v1/usuarios/1
+```
+
+</details>
+
+---
+
 ## Contribuição
+
 Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue ou enviar um pull request.
 
 1. Faça um fork do projeto.
@@ -405,4 +561,5 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue ou env
 5. Abra um pull request.
 
 ## Licença
+
 Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
