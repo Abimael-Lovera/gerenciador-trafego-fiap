@@ -113,7 +113,7 @@ O projeto possui a seguinte estrutura de diretórios:
 
 1. Clone o repositório:
     ```sh
-    git clone https://github.com/abimas/gerenciador-trafego-fiap.git
+    git clone https://github.com/Abimael-Lovera/gerenciador-trafego-fiap.git
     ```
 2. Navegue até o diretório do projeto:
 3. Abra o projeto na IDE de sua preferência(IntelliJ, Eclipse, VSCode).
