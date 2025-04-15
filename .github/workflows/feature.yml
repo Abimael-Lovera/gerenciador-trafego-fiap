@@ -35,16 +35,4 @@ jobs:
         with:
           name: app-jar
           path: target/*.jar
-      
-      - name: pull-request
-        uses: repo-sync/pull-request@v2
-        with:
-          destination_branch: "develop"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_label: "feature, automated pr"
-          pr_title: "[Feature] Merge para develop de ${{ github.ref_name }}"
-          pr_body: |
-            ## PR Automático
-            
-            Este PR foi criado automaticamente pelo workflow de CI.
-            Branch de origem: `${{ github.ref_name }}`
+
