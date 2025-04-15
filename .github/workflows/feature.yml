@@ -38,12 +38,10 @@ jobs:
           name: app-jar
           path: target/*.jar
       
-      - name: Criar PR automático para develop
-        uses: peter-evans/create-pull-request@v7
+      - name: pull-request
+        uses: repo-sync/pull-request@v2
         with:
-          commit-message: 'Merge automático da feature'
-          title: 'Merge automático da feature'
-          body: 'CI passou com sucesso e o PR foi aberto automaticamente para develop'
-          base: develop
-          branch: develop
-          token: ${{ secrets.GITHUB_TOKEN }}
+          destination_branch: "develop"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_label: "feature, automated pr"
+          pr_title: "[Example] Simple demo"
