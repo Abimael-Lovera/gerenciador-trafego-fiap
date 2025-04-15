@@ -5,6 +5,10 @@ on:
     branches:
       - "feature**"
 
+# permissions:
+  # contents: write
+  # pull-requests: write
+
 jobs:
   build-and-pr:
     name: Build and PR
@@ -34,11 +38,12 @@ jobs:
           name: app-jar
           path: target/*.jar
       
-      - name: Output build artifact ID
-        run: echo 'Artifact ID is ${{ steps.upload-artifact.outputs.artifact-id }}'
-      
-      - name: Output build artifact URL
-        run: echo 'Artifact URL is ${{ steps.upload-artifact.outputs.artifact-url }}'
-      
-      - name: Output build artifact digest
-        run: echo 'Artifact digest is ${{ steps.upload-artifact.outputs.artifact-digest }}'
+      - name: Criar PR automático para develop
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: 'Merge automático da feature'
+          title: 'Merge automático da feature'
+          body: 'CI passou com sucesso e o PR foi aberto automaticamente para develop'
+          base: develop
+          branch: develop
+          token: ${{ secrets.GITHUB_TOKEN }}
