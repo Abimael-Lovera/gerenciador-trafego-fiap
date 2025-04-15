@@ -13,13 +13,32 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'corretto'
           cache: 'maven'
+      
       - name: Build
         run: mvn clean package -DskipTests
-      - name: List files
-        run: ls -lrt
+      
+      - name: List build artifacts
+        run: ls -lrt target
+      
+      - name: Upload build artifacts
+        id: upload-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-jar
+          path: target/*.jar
+      
+      - name: Output build artifact ID
+        run: echo 'Artifact ID is ${{ steps.upload-artifact.outputs.artifact-id }}'
+      
+      - name: Output build artifact URL
+        run: echo 'Artifact URL is ${{ steps.upload-artifact.outputs.artifact-url }}'
+      
+      - name: Output build artifact digest
+        run: echo 'Artifact digest is ${{ steps.upload-artifact.outputs.artifact-digest }}'
