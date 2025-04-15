@@ -44,6 +44,6 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ vars.DOCKER_USERNAME }}/${{ github.repository }}:feature-${{ github.ref_name }}
+            ${{ vars.DOCKER_USERNAME }}/${{ github.repository }}:feature-latest
             ${{ vars.DOCKER_USERNAME }}/${{ github.repository }}:feature-${{ github.sha }}
 
