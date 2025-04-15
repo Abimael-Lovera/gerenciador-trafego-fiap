@@ -5,9 +5,7 @@ on:
     branches:
       - "feature**"
 
-permissions:
-  contents: write
-  pull-requests: write
+permissions: write-all
 
 jobs:
   build-and-pr:
