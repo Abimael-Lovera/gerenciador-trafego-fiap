@@ -18,7 +18,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'corretto'
-          cache: true
+          cache: 'maven'
       - name: Build
         run: mvn clean package -DskipTests
       - name: List files
