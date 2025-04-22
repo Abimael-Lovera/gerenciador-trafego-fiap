@@ -1,0 +1,49 @@
+name: Test Workflow
+
+on:
+  push:
+    branches:
+      - feature/*
+
+jobs:
+  feature-test:
+    name: Build application
+    if: github.ref_name == 'feature/test'
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Print variables ambiente dev
+        run: |
+          echo "Secret AMBIENTE: ${{ secrets.AMBIENTE}}"
+          echo "Var VARSS: ${{ vars.VARSS}}"
+
+  feature:
+    name: Build application
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Print variables ambiente dev
+        run: |
+          echo "Secret AMBIENTE: ${{ secrets.AMBIENTE}}"
+          echo "Var VARSS: ${{ vars.VARSS}}"
+
+  prod:
+    runs-on: ubuntu-latest
+    environment: prod
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Print variables ambiente prod
+        run: |
+          echo "Secret AMBIENTE: ${{ secrets.AMBIENTE}}"
+          echo "Var VARSS: ${{ vars.VARSS}}"
