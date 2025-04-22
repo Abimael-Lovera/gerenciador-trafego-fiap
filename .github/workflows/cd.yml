@@ -1,4 +1,4 @@
-name: CI - Feature
+name: CD
 
 on:
   push:
@@ -8,9 +8,8 @@ on:
 
 jobs:
   build-docker:
-    name: Build Docker image
+    name: Build Docker
     runs-on: ubuntu-latest
-    # Define outputs no nível do job
     outputs:
       short_sha: ${{ steps.short-sha.outputs.SHORT_SHA }}
 
@@ -38,19 +37,36 @@ jobs:
           push: true
           tags: |
             ${{ vars.DOCKER_USERNAME }}/gerenciador-trafego-fiap:${{ github.ref_name }}-${{ steps.short-sha.outputs.SHORT_SHA }}
+             ${{ github.ref_name == 'main' && format('{0}/gerenciador-trafego-fiap:latest', vars.DOCKER_USERNAME) || '' }}
 
-  deploy:
-    name: Deploy into Azure App Service
+  deploy-develop:
+    name: Deploy into Azure App Service - Develop
+    if: github.ref_name == 'develop'
     runs-on: ubuntu-latest
     needs: build-docker
+    environment: dev
 
     steps:
-      - name: Deploy to Azure Web App
+      - name: Deploy to Azure Web App - Develop
         uses: azure/webapps-deploy@v2
         id: deploy-azure-app
         with:
           app-name: ${{ secrets.AZURE_APP_NAME }}
           publish-profile: ${{ secrets.AZURE_APP_PUBLISH_PROFILE }}
-          # Removido slot-name para evitar o erro
-          # Use o short SHA do job build-docker
+          images: ${{ vars.DOCKER_USERNAME }}/gerenciador-trafego-fiap:${{ github.ref_name }}-${{ needs.build-docker.outputs.short_sha }}
+
+  deploy-prod:
+    name: Deploy into Azure App Service - Production
+    if: github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    needs: build-docker
+    environment: prod
+
+    steps:
+      - name: Deploy to Azure Web App - Develop
+        uses: azure/webapps-deploy@v2
+        id: deploy-azure-app
+        with:
+          app-name: ${{ secrets.AZURE_APP_NAME }}
+          publish-profile: ${{ secrets.AZURE_APP_PUBLISH_PROFILE }}
           images: ${{ vars.DOCKER_USERNAME }}/gerenciador-trafego-fiap:${{ github.ref_name }}-${{ needs.build-docker.outputs.short_sha }}
