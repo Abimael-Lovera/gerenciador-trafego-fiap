@@ -1,0 +1,72 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+jobs:
+  build-docker:
+    name: Build Docker
+    runs-on: ubuntu-latest
+    outputs:
+      short_sha: ${{ steps.short-sha.outputs.SHORT_SHA }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract short SHA
+        id: short-sha
+        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_ACESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ vars.DOCKER_USERNAME }}/gerenciador-trafego-fiap:${{ github.ref_name }}-${{ steps.short-sha.outputs.SHORT_SHA }}
+             ${{ github.ref_name == 'main' && format('{0}/gerenciador-trafego-fiap:latest', vars.DOCKER_USERNAME) || '' }}
+
+  deploy-develop:
+    name: Dev - Deploy into Azure App Service
+    if: github.ref_name == 'develop'
+    runs-on: ubuntu-latest
+    needs: build-docker
+    environment: dev
+
+    steps:
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        id: deploy-azure-app
+        with:
+          app-name: ${{ secrets.AZURE_APP_NAME }}
+          publish-profile: ${{ secrets.AZURE_APP_PUBLISH_PROFILE }}
+          images: ${{ vars.DOCKER_USERNAME }}/gerenciador-trafego-fiap:${{ github.ref_name }}-${{ needs.build-docker.outputs.short_sha }}
+
+  deploy-prod:
+    name: Prod - Deploy into Azure App Service
+    if: github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    needs: build-docker
+    environment: prod
+
+    steps:
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        id: deploy-azure-app
+        with:
+          app-name: ${{ secrets.AZURE_APP_NAME }}
+          publish-profile: ${{ secrets.AZURE_APP_PUBLISH_PROFILE }}
+          images: ${{ vars.DOCKER_USERNAME }}/gerenciador-trafego-fiap:${{ github.ref_name }}-${{ needs.build-docker.outputs.short_sha }}
