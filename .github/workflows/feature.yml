@@ -7,7 +7,7 @@ on:
 
 jobs:
   feature-test:
-    name: Build application
+    name: feature test
     if: github.ref_name == 'feature/test'
     runs-on: ubuntu-latest
     environment: dev
@@ -22,7 +22,7 @@ jobs:
           echo "Var VARSS: ${{ vars.VARSS}}"
 
   feature:
-    name: Build application
+    name: feature
     runs-on: ubuntu-latest
     environment: dev
 
