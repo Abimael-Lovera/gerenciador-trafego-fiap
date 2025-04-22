@@ -1,4 +1,4 @@
-name: CI - Feature
+name: CD
 
 on:
   push:
@@ -8,9 +8,8 @@ on:
 
 jobs:
   build-docker:
-    name: Build Docker image
+    name: Build Docker
     runs-on: ubuntu-latest
-    # Define outputs no nível do job
     outputs:
       short_sha: ${{ steps.short-sha.outputs.SHORT_SHA }}
 
@@ -51,6 +50,4 @@ jobs:
         with:
           app-name: ${{ secrets.AZURE_APP_NAME }}
           publish-profile: ${{ secrets.AZURE_APP_PUBLISH_PROFILE }}
-          # Removido slot-name para evitar o erro
-          # Use o short SHA do job build-docker
           images: ${{ vars.DOCKER_USERNAME }}/gerenciador-trafego-fiap:${{ github.ref_name }}-${{ needs.build-docker.outputs.short_sha }}
