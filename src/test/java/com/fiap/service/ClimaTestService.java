@@ -27,9 +27,7 @@ public class ClimaTestService {
 
 	private ResponseEntity<String> ultimaResposta;
 
-	/**
-	 * Cria registros climáticos via API para testes
-	 */
+
 	public void criarDadosDeTeste() {
 		Map<String, Object> clima1 = new HashMap<>();
 		clima1.put("dsCondicao", "Ensolarado");
@@ -59,9 +57,7 @@ public class ClimaTestService {
 		}
 	}
 
-	/**
-	 * Envia requisição POST
-	 */
+
 	public void enviarPost(String url, Map<String, String> dados) {
 		try {
 			HttpHeaders headers = new HttpHeaders();
@@ -78,9 +74,7 @@ public class ClimaTestService {
 		}
 	}
 
-	/**
-	 * Envia requisição GET
-	 */
+
 	public void enviarGet(String url) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -89,9 +83,7 @@ public class ClimaTestService {
 		ultimaResposta = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
 	}
 
-	/**
-	 * Envia requisição PUT
-	 */
+
 	public void enviarPut(String url, Map<String, String> dados) {
 		try {
 			HttpHeaders headers = new HttpHeaders();
@@ -108,9 +100,7 @@ public class ClimaTestService {
 		}
 	}
 
-	/**
-	 * Envia requisição DELETE
-	 */
+
 	public void enviarDelete(String url) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -119,82 +109,50 @@ public class ClimaTestService {
 		ultimaResposta = restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
 	}
 
-	/**
-	 * Obtém o código de status da última resposta
-	 */
 	public int obterCodigoStatus() {
-		return ultimaResposta.getStatusCodeValue();
+		return ultimaResposta.getStatusCode().value();
 	}
 
-	/**
-	 * Obtém a resposta como JSON
-	 */
+
 	public JsonNode obterRespostaComoJson() throws IOException {
 		return objectMapper.readTree(ultimaResposta.getBody());
 	}
 
-	/**
-	 * Verifica se a resposta contém os dados especificados
-	 */
+
 	public boolean respostaContemDados(Map<String, String> dados) throws IOException {
 		JsonNode resposta = obterRespostaComoJson();
-
+		dados.forEach((chave, valor) -> System.out.println(chave + ": " + valor));
 		for (Map.Entry<String, String> entry : dados.entrySet()) {
-			String campo = entry.getKey();
-			String valorEsperado = entry.getValue();
+			String chave = entry.getKey();
+			String valor = entry.getValue();
 
-			if (!resposta.has(campo)) {
+			if (!resposta.has(chave) || !valor.equals(resposta.get(chave).asText())) {
 				return false;
 			}
-
-			String valorResposta = resposta.get(campo).asText();
-
-			if (!valorResposta.equals(valorEsperado)) {
-				if (campo.equals("nrTemperatura") || campo.equals("nrUmidade")) {
-					// Para campos numéricos, compara com tolerância
-					double valorRespostaNum = Double.parseDouble(valorResposta);
-					double valorEsperadoNum = Double.parseDouble(valorEsperado);
-
-					if (Math.abs(valorRespostaNum - valorEsperadoNum) > 0.001) {
-						return false;
-					}
-				} else {
-					return false;
-				}
-			}
 		}
-
 		return true;
 	}
 
-	/**
-	 * Verifica se a resposta tem um campo não nulo
-	 */
 	public boolean respostaTemCampoNaoNulo(String campo) throws IOException {
+		System.out.println("[ClimaService]Campo: " + campo);
 		JsonNode resposta = obterRespostaComoJson();
+		System.out.println("[ClimaService]Resposta: " + resposta);
 		return resposta.has(campo) && !resposta.get(campo).isNull();
 	}
 
-	/**
-	 * Verifica se a resposta contém uma lista paginada
-	 */
+
 	public boolean respostaContemListaPaginada() throws IOException {
 		JsonNode resposta = obterRespostaComoJson();
 		return resposta.has("content") && resposta.has("pageable") &&
 				resposta.has("totalElements") && resposta.has("totalPages");
 	}
 
-	/**
-	 * Verifica se a resposta contém um objeto com ID específico
-	 */
 	public boolean respostaContemId(Long id) throws IOException {
 		JsonNode resposta = obterRespostaComoJson();
 		return resposta.has("idClima") && resposta.get("idClima").asLong() == id;
 	}
 
-	/**
-	 * Verifica se a resposta contém uma mensagem de erro específica
-	 */
+
 	public boolean respostaContemErro(String mensagemParcial) throws IOException {
 		JsonNode resposta = obterRespostaComoJson();
 
@@ -209,9 +167,6 @@ public class ClimaTestService {
 		return false;
 	}
 
-	/**
-	 * Valida a resposta contra um schema JSON
-	 */
 	public boolean validarRespostaContraSchema(String nomeSchema) {
 		try {
 			JsonNode resposta = obterRespostaComoJson();
@@ -221,9 +176,6 @@ public class ClimaTestService {
 		}
 	}
 
-	/**
-	 * Converte dados de string para tipos apropriados
-	 */
 	private Map<String, Object> converterDados(Map<String, String> dados) {
 		Map<String, Object> resultado = new HashMap<>();
 
