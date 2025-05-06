@@ -231,7 +231,12 @@ Content-Type: application/json
 
 {
     "email": "usuário@fiap.com.br",
+    "senha": "12345678"
+}
+```
+
 ---
+</details>
 
 ## 2. Clima
 
