@@ -1,0 +1,111 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "timestamp": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "status": {
+            "type": "integer",
+            "enum": [
+                400
+            ]
+        },
+        "error": {
+            "type": "string",
+            "enum": [
+                "Bad Request"
+            ]
+        },
+        "path": {
+            "type": "string"
+        },
+        "errors": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "field",
+                    "message"
+                ],
+                "properties": {
+                    "field": {
+                        "type": "string",
+                        "description": "Campo com erro de validação"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Mensagem de erro para o campo"
+                    }
+                }
+            }
+        },
+        "violations": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "field",
+                    "message"
+                ],
+                "properties": {
+                    "field": {
+                        "type": "string",
+                        "description": "Campo com erro de validação"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Mensagem de erro para o campo"
+                    }
+                }
+            }
+        },
+        "fieldErrors": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "field",
+                    "message"
+                ],
+                "properties": {
+                    "field": {
+                        "type": "string",
+                        "description": "Campo com erro de validação"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Mensagem de erro para o campo"
+                    }
+                }
+            }
+        },
+        "message": {
+            "type": "string",
+            "description": "Mensagem geral de erro"
+        }
+    },
+    "anyOf": [
+        {
+            "required": [
+                "errors"
+            ]
+        },
+        {
+            "required": [
+                "violations"
+            ]
+        },
+        {
+            "required": [
+                "fieldErrors"
+            ]
+        },
+        {
+            "required": [
+                "message"
+            ]
+        }
+    ]
+}
