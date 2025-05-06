@@ -1,0 +1,140 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "required": [
+        "content",
+        "pageable",
+        "totalElements",
+        "totalPages",
+        "last",
+        "size",
+        "number",
+        "sort",
+        "first",
+        "numberOfElements",
+        "empty"
+    ],
+    "properties": {
+        "content": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "idClima",
+                    "dsCondicao",
+                    "nrTemperatura",
+                    "nrUmidade",
+                    "dtRegistro"
+                ],
+                "properties": {
+                    "idClima": {
+                        "type": "integer",
+                        "description": "Identificador único do registro climático"
+                    },
+                    "dsCondicao": {
+                        "type": "string",
+                        "description": "Descrição da condição climática",
+                        "minLength": 1,
+                        "maxLength": 150
+                    },
+                    "nrTemperatura": {
+                        "type": "number",
+                        "description": "Temperatura em graus Celsius"
+                    },
+                    "nrUmidade": {
+                        "type": "number",
+                        "description": "Percentual de umidade do ar",
+                        "minimum": 0,
+                        "maximum": 100
+                    },
+                    "dtRegistro": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Data do registro climático"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "pageable": {
+            "type": "object",
+            "properties": {
+                "sort": {
+                    "type": "object",
+                    "properties": {
+                        "empty": {
+                            "type": "boolean"
+                        },
+                        "sorted": {
+                            "type": "boolean"
+                        },
+                        "unsorted": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "pageNumber": {
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "type": "integer"
+                },
+                "paged": {
+                    "type": "boolean"
+                },
+                "unpaged": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "last": {
+            "type": "boolean",
+            "description": "Indica se é a última página"
+        },
+        "totalElements": {
+            "type": "integer",
+            "description": "Total de registros"
+        },
+        "totalPages": {
+            "type": "integer",
+            "description": "Total de páginas"
+        },
+        "size": {
+            "type": "integer",
+            "description": "Tamanho da página"
+        },
+        "number": {
+            "type": "integer",
+            "description": "Número da página atual"
+        },
+        "sort": {
+            "type": "object",
+            "properties": {
+                "empty": {
+                    "type": "boolean"
+                },
+                "sorted": {
+                    "type": "boolean"
+                },
+                "unsorted": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "first": {
+            "type": "boolean",
+            "description": "Indica se é a primeira página"
+        },
+        "numberOfElements": {
+            "type": "integer",
+            "description": "Número de elementos na página atual"
+        },
+        "empty": {
+            "type": "boolean",
+            "description": "Indica se a página está vazia"
+        }
+    }
+}
