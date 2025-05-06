@@ -13,7 +13,11 @@ Funcionalidade: Gerenciamento de registros climáticos - Atualizar
       | dtRegistro    | 2025-05-05 |
     Então o código de status da resposta deve ser 200
     E a resposta deve conter um objeto clima com ID 1
-    E a resposta deve conter um objeto clima com os dados atualizados
+    E a resposta deve conter um objeto clima com os dados atualizados:
+        | dsCondicao    | Chuvoso    |
+        | nrTemperatura |       22.0 |
+        | nrUmidade     |       90.0 |
+        | dtRegistro    | 2025-05-05 |
     E a resposta deve estar de acordo com o JSON Schema "clima_schema.json"
 
   Cenário: Tentar atualizar um registro climático inexistente

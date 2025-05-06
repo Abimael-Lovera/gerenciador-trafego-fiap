@@ -39,6 +39,22 @@ public class ClimaSteps {
 		}
 	}
 
+	@Dado("que o registro climático com ID {long} foi excluído")
+	public void queORegistroClimaticoComIDFoiExcluido(Long id) {
+		// Primeiro, verificamos se o registro existe
+		climaTestService.enviarGet("/clima/" + id);
+
+		// Se existir, excluímos
+		if (climaTestService.obterCodigoStatus() == 200) {
+			climaTestService.enviarDelete("/clima/" + id);
+
+			// Verificamos se a exclusão foi bem-sucedida
+			if (climaTestService.obterCodigoStatus() != 200) {
+				throw new RuntimeException("Não foi possível excluir o clima com ID " + id);
+			}
+		}
+	}
+
 	@Quando("eu enviar uma requisição POST para {string} com os dados:")
 	public void euEnviarUmaRequisicaoPOSTParaComOsDados(String endpoint, Map<String, String> dados) {
 		System.out.println(dados);
@@ -68,15 +84,22 @@ public class ClimaSteps {
 
 	@E("a resposta deve conter um objeto clima com os mesmos dados enviados:")
 	public void aRespostaDeveConterUmObjetoClimaComOsMesmosDadosEnviados(Map<String, String> dados) throws IOException {
-		System.out.println("Imprimindo dados");
+		System.out.println("Verificando dados na resposta:");
+		dados.forEach((chave, valor) -> System.out.println(chave + ": " + valor));
+		assertTrue(climaTestService.respostaContemDados(dados));
+	}
+
+	@E("a resposta deve conter um objeto clima com os dados atualizados:")
+	public void aRespostaDeveConterUmObjetoClimaComOsDadosAtualizados(Map<String, String> dados) throws IOException {
+		System.out.println("Verificando dados atualizados na resposta:");
 		dados.forEach((chave, valor) -> System.out.println(chave + ": " + valor));
 		assertTrue(climaTestService.respostaContemDados(dados));
 	}
 
 	@E("o objeto clima deve conter um campo {string} não nulo")
 	public void oObjetoClimaDeveConterUmCampoNaoNulo(String campo) throws IOException {
-		System.out.println("Campo: " + campo);
-//		assertTrue(climaTestService.respostaTemCampoNaoNulo(campo));
+		System.out.println("Verificando se campo não é nulo: " + campo);
+		assertTrue(climaTestService.respostaTemCampoNaoNulo(campo));
 	}
 
 	@E("a resposta deve conter uma lista paginada de climas")
@@ -92,6 +115,16 @@ public class ClimaSteps {
 	@E("a resposta deve conter uma mensagem de erro informando que o clima não foi encontrado")
 	public void aRespostaDeveConterUmaMensagemDeErroInformandoQueOClimaNaoFoiEncontrado() throws IOException {
 		assertTrue(climaTestService.respostaContemErro("Clima não encontrado"));
+	}
+
+	@E("a resposta deve conter erros de validação")
+	public void aRespostaDeveConterErrosDeValidacao() throws IOException {
+		assertTrue(climaTestService.respostaContemErrosDeValidacao());
+	}
+
+	@E("a resposta deve conter o objeto clima que foi excluído")
+	public void aRespostaDeveConterOObjetoClimaQueFoiExcluido() throws IOException {
+		assertTrue(climaTestService.respostaContemObjetoClimaValido());
 	}
 
 	@E("a resposta deve estar de acordo com o JSON Schema {string}")

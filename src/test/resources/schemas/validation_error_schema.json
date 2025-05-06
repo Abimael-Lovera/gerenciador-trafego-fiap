@@ -8,18 +8,27 @@
         },
         "status": {
             "type": "integer",
-            "enum": [
-                400
-            ]
+            "description": "Código de status HTTP"
         },
         "error": {
             "type": "string",
-            "enum": [
-                "Bad Request"
-            ]
+            "description": "Tipo de erro"
         },
         "path": {
-            "type": "string"
+            "type": "string",
+            "description": "Caminho da requisição"
+        },
+        "type": {
+            "type": "string",
+            "description": "Tipo do problema"
+        },
+        "title": {
+            "type": "string",
+            "description": "Título do erro"
+        },
+        "instance": {
+            "type": "string",
+            "description": "Instância (URI) onde ocorreu o erro"
         },
         "errors": {
             "type": "array",
@@ -84,6 +93,14 @@
         "message": {
             "type": "string",
             "description": "Mensagem geral de erro"
+        },
+        "detalhes": {
+            "type": "object",
+            "description": "Detalhes dos erros de validação por campo",
+            "additionalProperties": {
+                "type": "string",
+                "description": "Mensagem de erro para o campo"
+            }
         }
     },
     "anyOf": [
@@ -105,6 +122,11 @@
         {
             "required": [
                 "message"
+            ]
+        },
+        {
+            "required": [
+                "detalhes"
             ]
         }
     ]

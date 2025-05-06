@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 @Service
@@ -53,6 +54,8 @@ public class ClimaTestService {
 			HttpEntity<String> request2 = new HttpEntity<>(objectMapper.writeValueAsString(clima2), headers);
 			restTemplate.exchange("/clima", HttpMethod.POST, request2, String.class);
 		} catch (Exception e) {
+			System.err.println("Erro ao criar dados de teste: " + e.getMessage());
+			e.printStackTrace();
 			throw new RuntimeException("Erro ao criar dados de teste", e);
 		}
 	}
@@ -64,23 +67,37 @@ public class ClimaTestService {
 			headers.setContentType(MediaType.APPLICATION_JSON);
 
 			Map<String, Object> dadosConvertidos = converterDados(dados);
+			String              jsonBody         = objectMapper.writeValueAsString(dadosConvertidos);
+			System.out.println("Enviando POST para: " + url);
+			System.out.println("Corpo da requisição: " + jsonBody);
 
-			HttpEntity<String> request = new HttpEntity<>(
-					objectMapper.writeValueAsString(dadosConvertidos), headers);
-
+			HttpEntity<String> request = new HttpEntity<>(jsonBody, headers);
 			ultimaResposta = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+
+			System.out.println("Resposta: " + ultimaResposta.getStatusCode().value() + " - " + ultimaResposta.getBody());
 		} catch (Exception e) {
+			System.err.println("Erro ao enviar requisição POST: " + e.getMessage());
+			e.printStackTrace();
 			throw new RuntimeException("Erro ao enviar requisição POST", e);
 		}
 	}
 
 
 	public void enviarGet(String url) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			System.out.println("Enviando GET para: " + url);
 
-		HttpEntity<String> request = new HttpEntity<>(headers);
-		ultimaResposta = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+			HttpEntity<String> request = new HttpEntity<>(headers);
+			ultimaResposta = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+
+			System.out.println("Resposta: " + ultimaResposta.getStatusCode().value() + " - " + ultimaResposta.getBody());
+		} catch (Exception e) {
+			System.err.println("Erro ao enviar requisição GET: " + e.getMessage());
+			e.printStackTrace();
+			throw new RuntimeException("Erro ao enviar requisição GET", e);
+		}
 	}
 
 
@@ -90,23 +107,37 @@ public class ClimaTestService {
 			headers.setContentType(MediaType.APPLICATION_JSON);
 
 			Map<String, Object> dadosConvertidos = converterDados(dados);
+			String              jsonBody         = objectMapper.writeValueAsString(dadosConvertidos);
+			System.out.println("Enviando PUT para: " + url);
+			System.out.println("Corpo da requisição: " + jsonBody);
 
-			HttpEntity<String> request = new HttpEntity<>(
-					objectMapper.writeValueAsString(dadosConvertidos), headers);
-
+			HttpEntity<String> request = new HttpEntity<>(jsonBody, headers);
 			ultimaResposta = restTemplate.exchange(url, HttpMethod.PUT, request, String.class);
+
+			System.out.println("Resposta: " + ultimaResposta.getStatusCode().value() + " - " + ultimaResposta.getBody());
 		} catch (Exception e) {
+			System.err.println("Erro ao enviar requisição PUT: " + e.getMessage());
+			e.printStackTrace();
 			throw new RuntimeException("Erro ao enviar requisição PUT", e);
 		}
 	}
 
 
 	public void enviarDelete(String url) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			System.out.println("Enviando DELETE para: " + url);
 
-		HttpEntity<String> request = new HttpEntity<>(headers);
-		ultimaResposta = restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+			HttpEntity<String> request = new HttpEntity<>(headers);
+			ultimaResposta = restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+
+			System.out.println("Resposta: " + ultimaResposta.getStatusCode().value() + " - " + ultimaResposta.getBody());
+		} catch (Exception e) {
+			System.err.println("Erro ao enviar requisição DELETE: " + e.getMessage());
+			e.printStackTrace();
+			throw new RuntimeException("Erro ao enviar requisição DELETE", e);
+		}
 	}
 
 	public int obterCodigoStatus() {
@@ -115,63 +146,180 @@ public class ClimaTestService {
 
 
 	public JsonNode obterRespostaComoJson() throws IOException {
-		return objectMapper.readTree(ultimaResposta.getBody());
+		try {
+			return objectMapper.readTree(ultimaResposta.getBody());
+		} catch (Exception e) {
+			System.err.println("Erro ao converter resposta para JSON: " + ultimaResposta.getBody());
+			e.printStackTrace();
+			throw e;
+		}
 	}
 
 
 	public boolean respostaContemDados(Map<String, String> dados) throws IOException {
 		JsonNode resposta = obterRespostaComoJson();
-		dados.forEach((chave, valor) -> System.out.println(chave + ": " + valor));
-		for (Map.Entry<String, String> entry : dados.entrySet()) {
-			String chave = entry.getKey();
-			String valor = entry.getValue();
+		System.out.println("Verificando dados na resposta: " + resposta);
 
-			if (!resposta.has(chave) || !valor.equals(resposta.get(chave).asText())) {
+		for (Map.Entry<String, String> entry : dados.entrySet()) {
+			String campo         = entry.getKey();
+			String valorEsperado = entry.getValue();
+
+			if (!resposta.has(campo)) {
+				System.out.println("Campo não encontrado na resposta: " + campo);
+				return false;
+			}
+
+			String valorAtual = resposta.get(campo).asText();
+
+			// Para campos numéricos, precisamos de uma comparação mais tolerante
+			if (campo.equals("nrTemperatura") || campo.equals("nrUmidade")) {
+				try {
+					double valorEsperadoNum = Double.parseDouble(valorEsperado);
+					double valorAtualNum    = Double.parseDouble(valorAtual);
+
+					if (Math.abs(valorEsperadoNum - valorAtualNum) > 0.001) {
+						System.out.println("Valor numérico diferente para campo " + campo +
+								": esperado=" + valorEsperado + ", atual=" + valorAtual);
+						return false;
+					}
+				} catch (NumberFormatException e) {
+					System.out.println("Erro ao converter valores numéricos para campo " + campo);
+					return false;
+				}
+			} else if (!valorAtual.equals(valorEsperado)) {
+				System.out.println("Valor diferente para campo " + campo +
+						": esperado=" + valorEsperado + ", atual=" + valorAtual);
 				return false;
 			}
 		}
+
 		return true;
 	}
 
 	public boolean respostaTemCampoNaoNulo(String campo) throws IOException {
-		System.out.println("[ClimaService]Campo: " + campo);
 		JsonNode resposta = obterRespostaComoJson();
-		System.out.println("[ClimaService]Resposta: " + resposta);
-		return resposta.has(campo) && !resposta.get(campo).isNull();
+		System.out.println("Verificando campo não nulo: " + campo + " na resposta: " + resposta);
+		boolean resultado = resposta.has(campo) && !resposta.get(campo).isNull();
+		System.out.println("Resultado da verificação: " + resultado);
+		return resultado;
 	}
 
 
 	public boolean respostaContemListaPaginada() throws IOException {
 		JsonNode resposta = obterRespostaComoJson();
-		return resposta.has("content") && resposta.has("pageable") &&
+		boolean resultado = resposta.has("content") && resposta.has("pageable") &&
 				resposta.has("totalElements") && resposta.has("totalPages");
+		System.out.println("Verificando se resposta contém lista paginada: " + resultado);
+		return resultado;
 	}
 
 	public boolean respostaContemId(Long id) throws IOException {
-		JsonNode resposta = obterRespostaComoJson();
-		return resposta.has("idClima") && resposta.get("idClima").asLong() == id;
+		JsonNode resposta  = obterRespostaComoJson();
+		boolean  resultado = resposta.has("idClima") && resposta.get("idClima").asLong() == id;
+		System.out.println("Verificando se resposta contém ID " + id + ": " + resultado);
+		return resultado;
 	}
 
 
 	public boolean respostaContemErro(String mensagemParcial) throws IOException {
 		JsonNode resposta = obterRespostaComoJson();
+		System.out.println("Verificando se resposta contém erro '" + mensagemParcial + "' em: " + resposta);
 
 		if (resposta.has("title")) {
-			return resposta.get("title").asText().contains(mensagemParcial);
+			String  titulo    = resposta.get("title").asText();
+			boolean resultado = titulo.contains(mensagemParcial);
+			System.out.println("Verificando no título '" + titulo + "': " + resultado);
+			if (resultado) return true;
 		}
 
 		if (resposta.has("detail")) {
-			return resposta.get("detail").asText().contains(mensagemParcial);
+			String  detalhe   = resposta.get("detail").asText();
+			boolean resultado = detalhe.contains(mensagemParcial);
+			System.out.println("Verificando nos detalhes '" + detalhe + "': " + resultado);
+			return resultado;
 		}
 
 		return false;
 	}
 
+	/**
+	 * Verifica se a resposta contém erros de validação
+	 */
+	public boolean respostaContemErrosDeValidacao() throws IOException {
+		JsonNode resposta = obterRespostaComoJson();
+		System.out.println("Verificando se resposta contém erros de validação: " + resposta);
+
+		// Verifica diferentes formatos de resposta de erro de validação
+		if (resposta.has("errors") && resposta.get("errors").isArray() && resposta.get("errors").size() > 0) {
+			return true;
+		}
+
+		if (resposta.has("violations") && resposta.get("violations").isArray() && resposta.get("violations").size() > 0) {
+			return true;
+		}
+
+		if (resposta.has("fieldErrors") && resposta.get("fieldErrors").isArray() && resposta.get("fieldErrors").size() > 0) {
+			return true;
+		}
+
+		if (resposta.has("message") && resposta.get("message").asText().contains("validation")) {
+			return true;
+		}
+
+		// Verifica o formato específico usado pela API (campo "detalhes")
+		if (resposta.has("detalhes") && resposta.get("detalhes").isObject() && resposta.get("detalhes").size() > 0) {
+			return true;
+		}
+
+		// Verifica se o título indica um erro de validação
+		if (resposta.has("title") && resposta.get("title").asText().contains("validação")) {
+			return true;
+		}
+
+		// Caso a resposta tenha uma estrutura genérica, verifica se há campos que indicam erros de validação
+		if (resposta.isObject()) {
+			Iterator<String> fieldNames = resposta.fieldNames();
+			while (fieldNames.hasNext()) {
+				String fieldName = fieldNames.next();
+				if (fieldName.contains("error") || fieldName.contains("violation")) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Verifica se a resposta contém um objeto clima válido
+	 */
+	public boolean respostaContemObjetoClimaValido() throws IOException {
+		JsonNode resposta = obterRespostaComoJson();
+		System.out.println("Verificando se resposta contém um objeto clima válido: " + resposta);
+
+		// Um objeto clima válido deve ter os campos obrigatórios
+		return resposta.has("idClima") &&
+				resposta.has("dsCondicao") &&
+				resposta.has("nrTemperatura") &&
+				resposta.has("nrUmidade") &&
+				resposta.has("dtRegistro");
+	}
+
 	public boolean validarRespostaContraSchema(String nomeSchema) {
 		try {
 			JsonNode resposta = obterRespostaComoJson();
-			return schemaValidator.validarJson(resposta, nomeSchema);
+			System.out.println("Validando resposta contra schema: " + nomeSchema);
+			boolean resultado = schemaValidator.validarJson(resposta, nomeSchema);
+
+			if (!resultado) {
+				String detalhes = schemaValidator.validarJsonComDetalhes(resposta, nomeSchema);
+				System.out.println("Erro na validação do schema: " + detalhes);
+			}
+
+			return resultado;
 		} catch (Exception e) {
+			System.err.println("Erro ao validar resposta contra schema: " + nomeSchema);
+			e.printStackTrace();
 			throw new RuntimeException("Erro ao validar resposta contra schema: " + nomeSchema, e);
 		}
 	}
