@@ -16,14 +16,23 @@ public class JsonSchemaValidator {
 
 	private static final String SCHEMA_BASE_PATH = "src/test/resources/schemas/";
 
-	public  boolean validarJson(JsonNode jsonNode, String schemaName) {
+	private static String lerArquivo(String schemaName) {
 		try {
-			String schemaContent = lerArquivo(schemaName);
-			JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
-			JsonSchema schema = factory.getSchema(schemaContent);
+			return new String(Files.readAllBytes(Paths.get(SCHEMA_BASE_PATH + schemaName)));
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Erro ao ler arquivo: " + schemaName, e);
+		}
+	}
+
+	public boolean validarJson(JsonNode jsonNode, String schemaName) {
+		try {
+			String                 schemaContent    = lerArquivo(schemaName);
+			JsonSchemaFactory      factory          = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
+			JsonSchema             schema           = factory.getSchema(schemaContent);
 			Set<ValidationMessage> validationResult = schema.validate(jsonNode);
 			return validationResult.isEmpty();
-		} catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -31,9 +40,9 @@ public class JsonSchemaValidator {
 
 	public String validarJsonComDetalhes(JsonNode jsonNode, String schemaName) {
 		try {
-			String schemaContent = lerArquivo(schemaName);
-			JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
-			JsonSchema schema = factory.getSchema(schemaContent);
+			String                 schemaContent    = lerArquivo(schemaName);
+			JsonSchemaFactory      factory          = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
+			JsonSchema             schema           = factory.getSchema(schemaContent);
 			Set<ValidationMessage> validationResult = schema.validate(jsonNode);
 			if (validationResult.isEmpty()) {
 				return "JSON válido";
@@ -43,18 +52,9 @@ public class JsonSchemaValidator {
 				sb.append(message.getMessage()).append("\n");
 			}
 			return sb.toString();
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("Erro ao validar JSON com schema: " + schemaName, e);
-		}
-	}
-
-	private static String lerArquivo(String schemaName) {
-		try {
-			return new String(Files.readAllBytes(Paths.get(SCHEMA_BASE_PATH+ schemaName)));
-		}catch (Exception e){
-			e.printStackTrace();
-			throw new RuntimeException("Erro ao ler arquivo: " + schemaName, e);
 		}
 	}
 

@@ -178,6 +178,25 @@
             <artifactId>junit-platform-suite</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- TestContainers -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>1.19.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>1.19.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>1.19.7</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -196,9 +215,9 @@
                         <include>**/CucumberRunnerTest.java</include>
                     </includes>
                     <!-- Configuração necessária para testes que utilizam Spring Boot -->
-                    <!-- <systemPropertyVariables>
+                    <systemPropertyVariables>
                         <spring.profiles.active>test</spring.profiles.active>
-                    </systemPropertyVariables> -->
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>
