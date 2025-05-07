@@ -3,7 +3,7 @@ Funcionalidade: Gerenciamento de registros climáticos - Criar e Consultar
   Como um usuário do sistema
   Eu quero poder cadastrar e consultar informações climáticas
   Para que possa ter um registro histórico das condições meteorológicas
-#OK
+
   Cenário: Criar um novo registro climático com sucesso
     Quando eu enviar uma requisição POST para "/clima" com os dados:
       | dsCondicao    | Ensolarado |

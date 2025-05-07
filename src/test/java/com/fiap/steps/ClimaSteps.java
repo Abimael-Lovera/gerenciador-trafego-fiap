@@ -1,5 +1,6 @@
 package com.fiap.steps;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fiap.service.ClimaTestService;
 import io.cucumber.java.pt.Dado;
 import io.cucumber.java.pt.E;
@@ -18,6 +19,8 @@ public class ClimaSteps {
 	@Autowired
 	private ClimaTestService climaTestService;
 
+	private Long ultimoIdClimaCriado;
+
 	@Dado("que existem registros climáticos cadastrados")
 	public void queExistemRegistrosClimaticosCadastrados() {
 		climaTestService.criarDadosDeTeste();
@@ -25,14 +28,10 @@ public class ClimaSteps {
 
 	@Dado("que existe um registro climático com ID {long}")
 	public void queExisteUmRegistroClimaticoComID(Long id) {
-		// Primeiro, criamos registros para ter certeza que existe algum no sistema
 		climaTestService.criarDadosDeTeste();
 
-		// Depois verificamos se existe um com o ID específico
 		climaTestService.enviarGet("/clima/" + id);
 
-		// Se não encontrarmos, criamos mais registros até encontrar um com esse ID
-		// Nota: Este é um cenário de teste. Em um ambiente real, seria melhor usar mocks
 		if (climaTestService.obterCodigoStatus() != 200) {
 			throw new RuntimeException("Não foi possível encontrar um clima com ID " + id +
 					". Considere modificar o teste para usar um ID dinâmico em vez de fixo.");
@@ -41,14 +40,11 @@ public class ClimaSteps {
 
 	@Dado("que o registro climático com ID {long} foi excluído")
 	public void queORegistroClimaticoComIDFoiExcluido(Long id) {
-		// Primeiro, verificamos se o registro existe
 		climaTestService.enviarGet("/clima/" + id);
 
-		// Se existir, excluímos
 		if (climaTestService.obterCodigoStatus() == 200) {
 			climaTestService.enviarDelete("/clima/" + id);
 
-			// Verificamos se a exclusão foi bem-sucedida
 			if (climaTestService.obterCodigoStatus() != 200) {
 				throw new RuntimeException("Não foi possível excluir o clima com ID " + id);
 			}
@@ -57,22 +53,55 @@ public class ClimaSteps {
 
 	@Quando("eu enviar uma requisição POST para {string} com os dados:")
 	public void euEnviarUmaRequisicaoPOSTParaComOsDados(String endpoint, Map<String, String> dados) {
-		System.out.println(dados);
+		System.out.println("Enviando POST para " + endpoint + " com dados: " + dados);
 		climaTestService.enviarPost(endpoint, dados);
+		try {
+			JsonNode resposta = climaTestService.obterRespostaComoJson();
+			if (resposta.has("idClima")) {
+				ultimoIdClimaCriado = resposta.get("idClima").asLong();
+				System.out.println("ID do clima criado capturado: " + ultimoIdClimaCriado);
+			}
+		} catch (Exception e) {
+			System.err.println("Erro ao capturar ID do clima criado: " + e.getMessage());
+		}
 	}
 
 	@Quando("eu enviar uma requisição GET para {string}")
 	public void euEnviarUmaRequisicaoGETParaComOsDados(String endpoint) {
+		if (endpoint.contains("{idClima}")) {
+			if (ultimoIdClimaCriado == null) {
+				throw new RuntimeException("Não há ID de clima disponível. Certifique-se de criar um clima antes de referenciá-lo.");
+			}
+			String endpointAjustado = endpoint.replace("{idClima}", ultimoIdClimaCriado.toString());
+			System.out.println("Substituindo {idClima} por " + ultimoIdClimaCriado + " no endpoint: " + endpoint + " -> " + endpointAjustado);
+			endpoint = endpointAjustado;
+		}
 		climaTestService.enviarGet(endpoint);
 	}
 
 	@Quando("eu enviar uma requisição PUT para {string} com os dados:")
 	public void euEnviarUmaRequisicaoPUTParaComOsDados(String endpoint, Map<String, String> dados) {
+		if (endpoint.contains("{idClima}")) {
+			if (ultimoIdClimaCriado == null) {
+				throw new RuntimeException("Não há ID de clima disponível. Certifique-se de criar um clima antes de referenciá-lo.");
+			}
+			String endpointAjustado = endpoint.replace("{idClima}", ultimoIdClimaCriado.toString());
+			System.out.println("Substituindo {idClima} por " + ultimoIdClimaCriado + " no endpoint: " + endpoint + " -> " + endpointAjustado);
+			endpoint = endpointAjustado;
+		}
 		climaTestService.enviarPut(endpoint, dados);
 	}
 
 	@Quando("eu enviar uma requisição DELETE para {string}")
 	public void euEnviarUmaRequisicaoDELETEPara(String endpoint) {
+		if (endpoint.contains("{idClima}")) {
+			if (ultimoIdClimaCriado == null) {
+				throw new RuntimeException("Não há ID de clima disponível. Certifique-se de criar um clima antes de referenciá-lo.");
+			}
+			String endpointAjustado = endpoint.replace("{idClima}", ultimoIdClimaCriado.toString());
+			System.out.println("Substituindo {idClima} por " + ultimoIdClimaCriado + " no endpoint: " + endpoint + " -> " + endpointAjustado);
+			endpoint = endpointAjustado;
+		}
 		climaTestService.enviarDelete(endpoint);
 	}
 
@@ -100,6 +129,12 @@ public class ClimaSteps {
 	public void oObjetoClimaDeveConterUmCampoNaoNulo(String campo) throws IOException {
 		System.out.println("Verificando se campo não é nulo: " + campo);
 		assertTrue(climaTestService.respostaTemCampoNaoNulo(campo));
+
+		if (campo.equals("idClima")) {
+			JsonNode resposta = climaTestService.obterRespostaComoJson();
+			ultimoIdClimaCriado = resposta.get("idClima").asLong();
+			System.out.println("Capturado ID do clima: " + ultimoIdClimaCriado);
+		}
 	}
 
 	@E("a resposta deve conter uma lista paginada de climas")
