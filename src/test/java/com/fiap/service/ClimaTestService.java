@@ -46,11 +46,9 @@ public class ClimaTestService {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 
-			// Cria o primeiro registro
 			HttpEntity<String> request1 = new HttpEntity<>(objectMapper.writeValueAsString(clima1), headers);
 			restTemplate.exchange("/clima", HttpMethod.POST, request1, String.class);
 
-			// Cria o segundo registro
 			HttpEntity<String> request2 = new HttpEntity<>(objectMapper.writeValueAsString(clima2), headers);
 			restTemplate.exchange("/clima", HttpMethod.POST, request2, String.class);
 		} catch (Exception e) {
@@ -128,10 +126,10 @@ public class ClimaTestService {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			System.out.println("Enviando DELETE para: " + url);
-
+	
 			HttpEntity<String> request = new HttpEntity<>(headers);
 			ultimaResposta = restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
-
+	
 			System.out.println("Resposta: " + ultimaResposta.getStatusCode().value() + " - " + ultimaResposta.getBody());
 		} catch (Exception e) {
 			System.err.println("Erro ao enviar requisição DELETE: " + e.getMessage());
@@ -161,7 +159,7 @@ public class ClimaTestService {
 		System.out.println("Verificando dados na resposta: " + resposta);
 
 		for (Map.Entry<String, String> entry : dados.entrySet()) {
-			String campo         = entry.getKey();
+			String campo = entry.getKey();
 			String valorEsperado = entry.getValue();
 
 			if (!resposta.has(campo)) {
@@ -170,24 +168,8 @@ public class ClimaTestService {
 			}
 
 			String valorAtual = resposta.get(campo).asText();
-
-			// Para campos numéricos, precisamos de uma comparação mais tolerante
-			if (campo.equals("nrTemperatura") || campo.equals("nrUmidade")) {
-				try {
-					double valorEsperadoNum = Double.parseDouble(valorEsperado);
-					double valorAtualNum    = Double.parseDouble(valorAtual);
-
-					if (Math.abs(valorEsperadoNum - valorAtualNum) > 0.001) {
-						System.out.println("Valor numérico diferente para campo " + campo +
-								": esperado=" + valorEsperado + ", atual=" + valorAtual);
-						return false;
-					}
-				} catch (NumberFormatException e) {
-					System.out.println("Erro ao converter valores numéricos para campo " + campo);
-					return false;
-				}
-			} else if (!valorAtual.equals(valorEsperado)) {
-				System.out.println("Valor diferente para campo " + campo +
+			if (!valorAtual.equals(valorEsperado)) {
+				System.out.println("Valor diferente para campo " + campo + 
 						": esperado=" + valorEsperado + ", atual=" + valorAtual);
 				return false;
 			}
@@ -242,14 +224,10 @@ public class ClimaTestService {
 		return false;
 	}
 
-	/**
-	 * Verifica se a resposta contém erros de validação
-	 */
 	public boolean respostaContemErrosDeValidacao() throws IOException {
 		JsonNode resposta = obterRespostaComoJson();
 		System.out.println("Verificando se resposta contém erros de validação: " + resposta);
 
-		// Verifica diferentes formatos de resposta de erro de validação
 		if (resposta.has("errors") && resposta.get("errors").isArray() && resposta.get("errors").size() > 0) {
 			return true;
 		}
@@ -266,17 +244,14 @@ public class ClimaTestService {
 			return true;
 		}
 
-		// Verifica o formato específico usado pela API (campo "detalhes")
 		if (resposta.has("detalhes") && resposta.get("detalhes").isObject() && resposta.get("detalhes").size() > 0) {
 			return true;
 		}
 
-		// Verifica se o título indica um erro de validação
 		if (resposta.has("title") && resposta.get("title").asText().contains("validação")) {
 			return true;
 		}
 
-		// Caso a resposta tenha uma estrutura genérica, verifica se há campos que indicam erros de validação
 		if (resposta.isObject()) {
 			Iterator<String> fieldNames = resposta.fieldNames();
 			while (fieldNames.hasNext()) {
@@ -290,14 +265,10 @@ public class ClimaTestService {
 		return false;
 	}
 
-	/**
-	 * Verifica se a resposta contém um objeto clima válido
-	 */
 	public boolean respostaContemObjetoClimaValido() throws IOException {
 		JsonNode resposta = obterRespostaComoJson();
 		System.out.println("Verificando se resposta contém um objeto clima válido: " + resposta);
 
-		// Um objeto clima válido deve ter os campos obrigatórios
 		return resposta.has("idClima") &&
 				resposta.has("dsCondicao") &&
 				resposta.has("nrTemperatura") &&
