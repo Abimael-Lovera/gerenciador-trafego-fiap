@@ -6,8 +6,8 @@ on:
       - develop
 
 jobs:
-  build:
-    name: Build application
+  build-and-test:
+    name: Build and Test application
     runs-on: ubuntu-latest
 
     steps:
@@ -21,8 +21,15 @@ jobs:
           distribution: "corretto"
           cache: "maven"
 
+      # Configurar Docker para TestContainers
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
       - name: Build
         run: mvn clean package -DskipTests
+
+      - name: Run tests
+        run: mvn test
 
       - name: List build files
         run: ls -lrt target
@@ -33,3 +40,12 @@ jobs:
         with:
           name: app-jar
           path: target/*.jar
+
+      - name: Upload test reports
+        if: always() # Upload mesmo se os testes falharem
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-reports
+          path: |
+            target/cucumber-reports.html
+            target/cucumber-reports.json

@@ -14,10 +14,11 @@
 5. [Instalação](#instalação)
 6. [Configuração do Banco de Dados](#configuração-do-banco-de-dados)
 7. [Executando o Projeto](#executando-o-projeto)
-8. [Acessar Documentação da API](#acessar-documentação-da-api)
-9. [Uso da Aplicação com Insomnia](#uso-da-aplicação-com-insomnia)
-10. [Contribuição](#contribuição)
-11. [Licença](#licença)
+8. [Executando Testes](#executando-testes)
+9. [Acessar Documentação da API](#acessar-documentação-da-api)
+10. [Uso da Aplicação com Insomnia](#uso-da-aplicação-com-insomnia)
+11. [Contribuição](#contribuição)
+12. [Licença](#licença)
 
 ## Funcionalidades
 
@@ -174,6 +175,114 @@ Para executar o projeto, basta seguir um dos passos abaixo:
 
 ### O projeto subirá no http://localhost:8080/api/v1
 
+## Executando Testes
+
+O projeto utiliza testes automatizados com Cucumber para validar o comportamento das APIs. Os testes são organizados em features BDD que descrevem os cenários de uso.
+
+### Pré-requisitos para os testes
+
+- Docker instalado (para testes com TestContainers)
+- Java 21
+- Maven
+
+### Estrutura de Testes
+
+Os testes estão organizados da seguinte forma:
+
+```
+src/test/
+├── java/com/fiap/
+│   ├── config/
+│   │   ├── CucumberSpringConfiguration.java  # Configuração do Spring para testes Cucumber
+│   │   └── PostgresTestContainer.java        # Configuração do TestContainers para banco de dados
+│   ├── service/
+│   │   └── ClimaTestService.java             # Serviço de teste para API Clima
+│   ├── steps/
+│   │   └── ClimaSteps.java                   # Implementação dos passos Cucumber
+│   ├── util/
+│   │   └── JsonSchemaValidator.java          # Validador de esquemas JSON para respostas
+│   └── CucumberRunnerTest.java               # Classe runner do Cucumber
+└── resources/
+    ├── features/                             # Arquivos de features Gherkin
+    │   ├── 1.CriarBuscarClima.feature
+    │   ├── 2.AtualizarClima.feature
+    │   └── 3.ExcluirClima.feature
+    └── schemas/                              # Esquemas JSON para validação de respostas
+        ├── clima_schema.json
+        ├── clima_page_schema.json
+        ├── error_schema.json
+        └── validation_error_schema.json
+```
+
+### Cenários de Teste
+
+O projeto implementa testes BDD para as seguintes funcionalidades:
+
+#### 1. Criar e Buscar Registros Climáticos
+- **Criar um novo registro climático com sucesso**: Verifica se é possível criar um novo clima e retornar os dados corretos
+- **Buscar todos os registros climáticos paginados**: Verifica a listagem paginada de registros
+- **Buscar um registro climático por ID com sucesso**: Verifica a busca individual por ID
+- **Buscar um registro climático por ID inexistente**: Verifica o tratamento de erros para IDs inexistentes
+![img_2.png](img_2.png)
+#### 2. Atualizar Registros Climáticos
+- **Atualizar um registro climático com sucesso**: Verifica a atualização correta dos dados
+- **Tentar atualizar um registro climático inexistente**: Verifica tratamento de erros
+- **Tentar atualizar um registro climático com dados inválidos**: Verifica validações de entrada
+![img_3.png](img_3.png)
+#### 3. Excluir Registros Climáticos
+- **Excluir um registro climático com sucesso**: Verifica a exclusão correta de um clima
+- **Verificar que o registro foi excluído**: Confirma que o registro não existe mais após exclusão
+- **Tentar excluir um registro climático inexistente**: Verifica tratamento de erros
+![img_4.png](img_4.png)
+### Tecnologias de Teste Utilizadas
+
+1. **Cucumber**: Framework BDD para escrever testes em linguagem natural (Gherkin)
+2. **TestContainers**: Biblioteca para criar contêineres Docker durante os testes, fornecendo um banco de dados PostgreSQL isolado
+3. **Spring Boot Test**: Ferramentas para testar aplicações Spring Boot
+4. **JSON Schema Validator**: Validação das respostas da API contra esquemas predefinidos
+
+### Configuração de Testes com TestContainers
+
+A classe `PostgresTestContainer` configura automaticamente um contêiner Docker com PostgreSQL:
+
+```java
+@Container
+static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(IMAGE_VERSION)
+        .withDatabaseName("testdb")
+        .withUsername("test")
+        .withPassword("test")
+        .withReuse(true);
+
+static {
+    // Iniciar o contêiner de forma explícita
+    if (!postgres.isRunning()) {
+        postgres.start();
+        System.out.println("⚡ PostgreSQL container started at: " + postgres.getJdbcUrl());
+    }
+}
+```
+
+### Executando os Testes
+
+Para executar todos os testes, use o comando:
+
+```bash
+mvn test
+```
+
+### Integração Contínua (CI/CD)
+
+Os testes são executados automaticamente:
+
+1. Em pull requests para a branch `develop` (CI)
+2. Antes de construir a imagem Docker nas branches `develop` e `main` (CD)
+
+Isso garante que apenas código testado seja integrado e implantado.
+#### Exemplo de Execução de teste
+![img_5.png](img_5.png)
+![img.png](img.png)
+![img_1.png](img_1.png)
+
 ## Acessar documentação da API
 
 A documentação da API está disponível em http://localhost:8080/api/v1/doc/swagger-ui/index.html
@@ -231,7 +340,12 @@ Content-Type: application/json
 
 {
     "email": "usuário@fiap.com.br",
+    "senha": "12345678"
+}
+```
+
 ---
+</details>
 
 ## 2. Clima
 
