@@ -189,11 +189,80 @@ O projeto utiliza testes automatizados com Cucumber para validar o comportamento
 
 Os testes estão organizados da seguinte forma:
 
-- **Features BDD**: `/src/test/resources/features`
-- **Steps de implementação**: `/src/test/java/com/fiap/steps`
-- **Schemas JSON para validação**: `/src/test/resources/schemas`
+```
+src/test/
+├── java/com/fiap/
+│   ├── config/
+│   │   ├── CucumberSpringConfiguration.java  # Configuração do Spring para testes Cucumber
+│   │   └── PostgresTestContainer.java        # Configuração do TestContainers para banco de dados
+│   ├── service/
+│   │   └── ClimaTestService.java             # Serviço de teste para API Clima
+│   ├── steps/
+│   │   └── ClimaSteps.java                   # Implementação dos passos Cucumber
+│   ├── util/
+│   │   └── JsonSchemaValidator.java          # Validador de esquemas JSON para respostas
+│   └── CucumberRunnerTest.java               # Classe runner do Cucumber
+└── resources/
+    ├── features/                             # Arquivos de features Gherkin
+    │   ├── 1.CriarBuscarClima.feature
+    │   ├── 2.AtualizarClima.feature
+    │   └── 3.ExcluirClima.feature
+    └── schemas/                              # Esquemas JSON para validação de respostas
+        ├── clima_schema.json
+        ├── clima_page_schema.json
+        ├── error_schema.json
+        └── validation_error_schema.json
+```
 
-### Executando todos os testes
+### Cenários de Teste
+
+O projeto implementa testes BDD para as seguintes funcionalidades:
+
+#### 1. Criar e Buscar Registros Climáticos
+- **Criar um novo registro climático com sucesso**: Verifica se é possível criar um novo clima e retornar os dados corretos
+- **Buscar todos os registros climáticos paginados**: Verifica a listagem paginada de registros
+- **Buscar um registro climático por ID com sucesso**: Verifica a busca individual por ID
+- **Buscar um registro climático por ID inexistente**: Verifica o tratamento de erros para IDs inexistentes
+![img_2.png](img_2.png)
+#### 2. Atualizar Registros Climáticos
+- **Atualizar um registro climático com sucesso**: Verifica a atualização correta dos dados
+- **Tentar atualizar um registro climático inexistente**: Verifica tratamento de erros
+- **Tentar atualizar um registro climático com dados inválidos**: Verifica validações de entrada
+![img_3.png](img_3.png)
+#### 3. Excluir Registros Climáticos
+- **Excluir um registro climático com sucesso**: Verifica a exclusão correta de um clima
+- **Verificar que o registro foi excluído**: Confirma que o registro não existe mais após exclusão
+- **Tentar excluir um registro climático inexistente**: Verifica tratamento de erros
+![img_4.png](img_4.png)
+### Tecnologias de Teste Utilizadas
+
+1. **Cucumber**: Framework BDD para escrever testes em linguagem natural (Gherkin)
+2. **TestContainers**: Biblioteca para criar contêineres Docker durante os testes, fornecendo um banco de dados PostgreSQL isolado
+3. **Spring Boot Test**: Ferramentas para testar aplicações Spring Boot
+4. **JSON Schema Validator**: Validação das respostas da API contra esquemas predefinidos
+
+### Configuração de Testes com TestContainers
+
+A classe `PostgresTestContainer` configura automaticamente um contêiner Docker com PostgreSQL:
+
+```java
+@Container
+static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(IMAGE_VERSION)
+        .withDatabaseName("testdb")
+        .withUsername("test")
+        .withPassword("test")
+        .withReuse(true);
+
+static {
+    // Iniciar o contêiner de forma explícita
+    if (!postgres.isRunning()) {
+        postgres.start();
+        System.out.println("⚡ PostgreSQL container started at: " + postgres.getJdbcUrl());
+    }
+}
+```
+
+### Executando os Testes
 
 Para executar todos os testes, use o comando:
 
@@ -201,30 +270,18 @@ Para executar todos os testes, use o comando:
 mvn test
 ```
 
-### Sobre os testes
+### Integração Contínua (CI/CD)
 
-Os testes utilizam:
+Os testes são executados automaticamente:
 
-1. **TestContainers**: Inicia automaticamente um contêiner Docker com PostgreSQL para os testes, garantindo um ambiente isolado;
-2. **Cucumber BDD**: Descreve os comportamentos esperados em linguagem natural (Gherkin);
-3. **Spring Boot Test**: Para simular requisições HTTP sem a necessidade de um servidor externo;
-4. **Validação de Schema JSON**: Para garantir que as respostas da API estão no formato esperado.
+1. Em pull requests para a branch `develop` (CI)
+2. Antes de construir a imagem Docker nas branches `develop` e `main` (CD)
 
-### Relatórios de Teste
-
-Após a execução dos testes, relatórios são gerados em:
-
-- HTML: `target/cucumber-reports.html`
-- JSON: `target/cucumber-reports.json`
-
-## Integração Contínua
-
-O projeto está configurado com GitHub Actions para:
-
-1. **CI (Integração Contínua)**: Em Pull Requests para `develop`, executa os testes automaticamente;
-2. **CD (Entrega Contínua)**: Em pushes para `develop` e `main`, constrói e publica a imagem Docker.
-
-Para mais detalhes, consulte os arquivos de configuração em `.github/workflows/`.
+Isso garante que apenas código testado seja integrado e implantado.
+#### Exemplo de Execução de teste
+![img_5.png](img_5.png)
+![img.png](img.png)
+![img_1.png](img_1.png)
 
 ## Acessar documentação da API
 
