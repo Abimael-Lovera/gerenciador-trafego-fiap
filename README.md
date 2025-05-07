@@ -14,10 +14,11 @@
 5. [Instalação](#instalação)
 6. [Configuração do Banco de Dados](#configuração-do-banco-de-dados)
 7. [Executando o Projeto](#executando-o-projeto)
-8. [Acessar Documentação da API](#acessar-documentação-da-api)
-9. [Uso da Aplicação com Insomnia](#uso-da-aplicação-com-insomnia)
-10. [Contribuição](#contribuição)
-11. [Licença](#licença)
+8. [Executando Testes](#executando-testes)
+9. [Acessar Documentação da API](#acessar-documentação-da-api)
+10. [Uso da Aplicação com Insomnia](#uso-da-aplicação-com-insomnia)
+11. [Contribuição](#contribuição)
+12. [Licença](#licença)
 
 ## Funcionalidades
 
@@ -173,6 +174,57 @@ Para executar o projeto, basta seguir um dos passos abaixo:
     ```
 
 ### O projeto subirá no http://localhost:8080/api/v1
+
+## Executando Testes
+
+O projeto utiliza testes automatizados com Cucumber para validar o comportamento das APIs. Os testes são organizados em features BDD que descrevem os cenários de uso.
+
+### Pré-requisitos para os testes
+
+- Docker instalado (para testes com TestContainers)
+- Java 21
+- Maven
+
+### Estrutura de Testes
+
+Os testes estão organizados da seguinte forma:
+
+- **Features BDD**: `/src/test/resources/features`
+- **Steps de implementação**: `/src/test/java/com/fiap/steps`
+- **Schemas JSON para validação**: `/src/test/resources/schemas`
+
+### Executando todos os testes
+
+Para executar todos os testes, use o comando:
+
+```bash
+mvn test
+```
+
+### Sobre os testes
+
+Os testes utilizam:
+
+1. **TestContainers**: Inicia automaticamente um contêiner Docker com PostgreSQL para os testes, garantindo um ambiente isolado;
+2. **Cucumber BDD**: Descreve os comportamentos esperados em linguagem natural (Gherkin);
+3. **Spring Boot Test**: Para simular requisições HTTP sem a necessidade de um servidor externo;
+4. **Validação de Schema JSON**: Para garantir que as respostas da API estão no formato esperado.
+
+### Relatórios de Teste
+
+Após a execução dos testes, relatórios são gerados em:
+
+- HTML: `target/cucumber-reports.html`
+- JSON: `target/cucumber-reports.json`
+
+## Integração Contínua
+
+O projeto está configurado com GitHub Actions para:
+
+1. **CI (Integração Contínua)**: Em Pull Requests para `develop`, executa os testes automaticamente;
+2. **CD (Entrega Contínua)**: Em pushes para `develop` e `main`, constrói e publica a imagem Docker.
+
+Para mais detalhes, consulte os arquivos de configuração em `.github/workflows/`.
 
 ## Acessar documentação da API
 
